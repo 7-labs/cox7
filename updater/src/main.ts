@@ -42,9 +42,8 @@ function loadUpdaterEnvFile() {
   }
 }
 
-function explicitRemovalIds(requestedIds: string[], items: YouTubeVideoItem[]) {
+function explicitRemovalIds(items: YouTubeVideoItem[]) {
   const removed = new Set<string>();
-  const returnedIds = new Set<string>();
 
   for (const item of items) {
     const itemId = item.id;
@@ -52,16 +51,9 @@ function explicitRemovalIds(requestedIds: string[], items: YouTubeVideoItem[]) {
       continue;
     }
 
-    returnedIds.add(itemId);
     const privacyStatus = item.status?.privacyStatus || "private";
     if (privacyStatus !== "public" || item.status?.embeddable !== true) {
       removed.add(itemId);
-    }
-  }
-
-  for (const requestedId of requestedIds) {
-    if (!returnedIds.has(requestedId)) {
-      removed.add(requestedId);
     }
   }
 
@@ -98,7 +90,7 @@ async function sweep(config = loadConfig(), dryRun = false): Promise<RunSummary>
         tracker
       )) as YouTubeVideoItem[];
 
-      const removedForChannel = explicitRemovalIds(candidateVideoIds, detailItems);
+      const removedForChannel = explicitRemovalIds(detailItems);
       removedForChannel.forEach((id) => removedIds.add(id));
 
       const verified = detailItems

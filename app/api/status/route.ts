@@ -7,9 +7,11 @@ export async function GET() {
   const runtime = await getRuntimeStatus();
 
   return NextResponse.json(
-    runtime,
     {
-      status: runtime.status,
+      ...runtime,
+      statusEndpoint: "operator"
+    },
+    {
       headers: {
         "Cache-Control": "private, no-store"
       }

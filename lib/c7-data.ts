@@ -1,4 +1,14 @@
-export type LeagueSlug = "nfl" | "nba" | "mlb" | "nhl" | "draft" | "upcoming";
+export type LeagueSlug = "nfl" | "nba" | "mlb" | "nhl" | "soccer" | "draft" | "upcoming";
+
+export const leagueIcons: Record<LeagueSlug, string> = {
+  nfl: "🏈",
+  nba: "🏀",
+  mlb: "⚾",
+  nhl: "🏒",
+  soccer: "⚽",
+  draft: "📋",
+  upcoming: "📅"
+};
 
 export type PreviewType =
   | "game-preview"
@@ -109,6 +119,16 @@ export const leaguePages: LeaguePage[] = [
     primaryIntent: "Find official NHL playoff and game preview videos quickly."
   },
   {
+    slug: "soccer",
+    path: "/soccer-previews/",
+    name: "Soccer",
+    title: "Soccer Match Previews",
+    description:
+      "Find soccer match previews, World Cup previews, Champions League previews, Premier League matchweek previews, and trusted football preview videos.",
+    keywords: ["soccer preview", "match preview", "champions league preview", "world cup preview", "premier league preview"],
+    primaryIntent: "Find the newest trusted soccer match preview before kickoff."
+  },
+  {
     slug: "draft",
     path: "/draft-previews/",
     name: "Drafts",
@@ -184,6 +204,33 @@ export const trustedChannels: TrustedChannel[] = [
     sourceLevel: "network-official",
     leagues: ["nfl", "nba", "mlb", "nhl", "draft", "upcoming"],
     notes: "Network channel; allow only when title and description match preview intent."
+  },
+  {
+    slug: "espn-fc",
+    name: "ESPN FC",
+    channelId: "UC6c1z7bA__85CIWZ_jpCK-Q",
+    youtubeUrl: "https://www.youtube.com/@ESPNFC",
+    sourceLevel: "network-official",
+    leagues: ["soccer"],
+    notes: "Soccer network channel; match previews, World Cup and Champions League preview coverage."
+  },
+  {
+    slug: "cbs-golazo",
+    name: "CBS Sports Golazo",
+    channelId: "UCET00YnetHT7tOpu12v8jxg",
+    youtubeUrl: "https://www.youtube.com/@CBSSportsGolazo",
+    sourceLevel: "network-official",
+    leagues: ["soccer"],
+    notes: "Soccer network channel; matchday previews and pre-match analysis."
+  },
+  {
+    slug: "premier-league",
+    name: "Premier League",
+    channelId: "UCG5qGWdu8nIRZqJ_GgDwQ-w",
+    youtubeUrl: "https://www.youtube.com/@premierleague",
+    sourceLevel: "league-official",
+    leagues: ["soccer"],
+    notes: "League channel; prioritize for Premier League matchweek preview discovery."
   }
 ];
 

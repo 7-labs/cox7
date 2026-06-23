@@ -25,6 +25,7 @@ That separation is the core stability decision: updater failures can stale the i
 /nba-previews/
 /mlb-previews/
 /nhl-previews/
+/soccer-previews/
 /draft-previews/
 /upcoming-live-sports/
 /channels/
@@ -33,8 +34,10 @@ That separation is the core stability decision: updater failures can stale the i
 /archive/stem-journals/
 /video/{slug}/
 /watch/{videoId}/
+/api/live
 /api/search
 /api/health
+/api/status
 /sitemap.xml
 /sitemap-videos.xml
 /robots.txt

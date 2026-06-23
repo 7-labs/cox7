@@ -23,6 +23,7 @@ export type InventoryStats = {
   latestPublishedAt: string | null;
   lastRunAt: string | null;
   lastRunStatus: string | null;
+  source: InventorySource;
 };
 
 function shouldUseSeedInventory() {
@@ -282,7 +283,8 @@ function seedStats(): InventoryStats {
     perLeague,
     latestPublishedAt,
     lastRunAt: null,
-    lastRunStatus: null
+    lastRunStatus: null,
+    source: "seed"
   };
 }
 
@@ -320,7 +322,8 @@ export async function getInventoryStats(): Promise<InventoryStats> {
       perLeague,
       latestPublishedAt,
       lastRunAt: lastRun?.finished_at || lastRun?.started_at || null,
-      lastRunStatus: lastRun?.status || null
+      lastRunStatus: lastRun?.status || null,
+      source: "supabase"
     };
   } catch {
     return seedStats();
