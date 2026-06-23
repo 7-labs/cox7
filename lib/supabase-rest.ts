@@ -18,10 +18,19 @@ function getSchema() {
   return process.env.SUPABASE_SCHEMA || "cox7";
 }
 
+function getAuthToken() {
+  return process.env.SUPABASE_AUTH_TOKEN || null;
+}
+
 function buildHeaders(key: string, headers?: HeadersInit) {
+  // This Supabase fronts PostgREST with Kong key-auth: the opaque key goes in
+  // `apikey`, while the PostgREST role comes from a JWT in `Authorization`.
+  // Anon reads need no JWT (PostgREST falls back to the anon role), so only
+  // attach Authorization when SUPABASE_AUTH_TOKEN (a signed JWT) is provided.
+  const token = getAuthToken();
   return {
     apikey: key,
-    Authorization: `Bearer ${key}`,
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
     "Accept-Profile": getSchema(),
     "Content-Profile": getSchema(),
     Accept: "application/json",

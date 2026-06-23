@@ -3,9 +3,11 @@ import { previewVideoToRow, type ChannelRow, type UpdateRunRow, type VideoRowIns
 import type { PreviewVideo, TrustedChannel } from "../../lib/c7-data.js";
 
 function buildHeaders(config: UpdaterConfig, extra: HeadersInit = {}) {
+  // Kong key-auth uses the opaque service key in `apikey`; PostgREST derives the
+  // service_role from a signed JWT in `Authorization` (supabaseAuthToken).
   return {
     apikey: config.supabaseServiceKey,
-    Authorization: `Bearer ${config.supabaseServiceKey}`,
+    ...(config.supabaseAuthToken ? { Authorization: `Bearer ${config.supabaseAuthToken}` } : {}),
     "Accept-Profile": config.supabaseSchema,
     "Content-Profile": config.supabaseSchema,
     Accept: "application/json",

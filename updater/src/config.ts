@@ -4,6 +4,7 @@ export type UpdaterConfig = {
   youtubeApiKey: string;
   supabaseRestUrl: string;
   supabaseServiceKey: string;
+  supabaseAuthToken: string;
   supabaseSchema: string;
   cfDeployHookUrl: string;
   kumaPushUrl: string;
@@ -41,7 +42,9 @@ type LoadConfigOptions = {
 };
 
 export function loadConfig(options: LoadConfigOptions = {}): UpdaterConfig {
-  const requireNotifications = options.requireNotifications ?? true;
+  // Notifications (uptime-kuma heartbeat / deploy hook) are optional: the Worker
+  // reads inventory at runtime via ISR, so a rebuild trigger is not required.
+  const requireNotifications = options.requireNotifications ?? false;
   const requireSupabase = options.requireSupabase ?? true;
   const requireYouTube = options.requireYouTube ?? true;
 
@@ -49,6 +52,7 @@ export function loadConfig(options: LoadConfigOptions = {}): UpdaterConfig {
     youtubeApiKey: requireYouTube ? requireEnv("YOUTUBE_API_KEY") : optionalEnv("YOUTUBE_API_KEY"),
     supabaseRestUrl: requireSupabase ? requireEnv("SUPABASE_REST_URL") : optionalEnv("SUPABASE_REST_URL"),
     supabaseServiceKey: requireSupabase ? requireEnv("SUPABASE_SERVICE_KEY") : optionalEnv("SUPABASE_SERVICE_KEY"),
+    supabaseAuthToken: optionalEnv("SUPABASE_AUTH_TOKEN"),
     supabaseSchema: process.env.SUPABASE_SCHEMA || "cox7",
     cfDeployHookUrl: requireNotifications ? requireEnv("CF_DEPLOY_HOOK_URL") : optionalEnv("CF_DEPLOY_HOOK_URL"),
     kumaPushUrl: requireNotifications ? requireEnv("KUMA_PUSH_URL") : optionalEnv("KUMA_PUSH_URL"),
@@ -63,6 +67,7 @@ export function publicConfig(config: UpdaterConfig) {
     ...config,
     youtubeApiKey: maskSecret(config.youtubeApiKey),
     supabaseServiceKey: maskSecret(config.supabaseServiceKey),
+    supabaseAuthToken: maskSecret(config.supabaseAuthToken),
     cfDeployHookUrl: maskSecret(config.cfDeployHookUrl),
     kumaPushUrl: maskSecret(config.kumaPushUrl)
   };

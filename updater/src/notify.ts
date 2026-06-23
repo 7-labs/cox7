@@ -8,6 +8,7 @@ async function post(url: string, init: RequestInit = {}) {
 }
 
 export async function pingKuma(config: UpdaterConfig, status: "up" | "down", message: string) {
+  if (!config.kumaPushUrl) return; // heartbeat optional
   const url = new URL(config.kumaPushUrl);
   url.searchParams.set("status", status);
   url.searchParams.set("msg", message);
@@ -16,6 +17,7 @@ export async function pingKuma(config: UpdaterConfig, status: "up" | "down", mes
 }
 
 export async function triggerDeployHook(config: UpdaterConfig) {
+  if (!config.cfDeployHookUrl) return; // deploy hook optional (Worker reads inventory at runtime)
   await post(config.cfDeployHookUrl, {
     method: "POST"
   });

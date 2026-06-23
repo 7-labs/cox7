@@ -192,7 +192,7 @@ async function main() {
   const config = flags.seedOnly
     ? loadConfig({ requireNotifications: false, requireSupabase: true, requireYouTube: false })
     : loadConfig({
-        requireNotifications: !flags.dryRun,
+        requireNotifications: false,
         requireSupabase: !flags.dryRun,
         requireYouTube: !flags.dryRun
       });
