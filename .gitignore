@@ -2,6 +2,10 @@
 node_modules/
 updater/node_modules/
 
+# Lockfile excluded per workspace policy; deps are exact-pinned in package.json
+package-lock.json
+updater/package-lock.json
+
 # Build output
 .next/
 out/
