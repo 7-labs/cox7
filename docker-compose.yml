@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: updater/Dockerfile
+      # Use the host network during build so RUN steps (npm install) resolve DNS
+      # on hosts where the default build bridge lacks external resolution.
+      network: host
     env_file:
       - updater/.env
     networks:
