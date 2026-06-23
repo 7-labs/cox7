@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PreviewFinder from "@/components/PreviewFinder";
 import VideoCard from "@/components/VideoCard";
-import { leaguePages, site, trustedChannels, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
+import { leagueIcons, leaguePages, site, trustedChannels, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
 import { getInventoryStats, getVideos } from "@/lib/inventory";
 import { isLeagueSlug, isPreviewType, safeQuery } from "@/lib/search";
 
@@ -94,7 +94,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         <h2>Built around how sports fans search.</h2>
         <div className="league-grid">
           {leaguePages.map((league) => (
-            <Link className="info-card" href={league.path} key={league.slug}>
+            <Link className="info-card league-card" href={league.path} key={league.slug}>
+              <span className="league-icon" aria-hidden="true">{leagueIcons[league.slug]}</span>
               <strong>{league.title}</strong>
               <p>{league.primaryIntent}</p>
               <span className="text-link">Open {league.name} previews →</span>

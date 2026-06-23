@@ -53,6 +53,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <Link href="/nba-previews/">NBA</Link>
                 <Link href="/mlb-previews/">MLB</Link>
                 <Link href="/nhl-previews/">NHL</Link>
+                <Link href="/soccer-previews/">Soccer</Link>
                 <Link href="/channels/">Channels</Link>
               </div>
               <details className="nav-disclosure">
@@ -64,6 +65,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                   <Link href="/nba-previews/">NBA</Link>
                   <Link href="/mlb-previews/">MLB</Link>
                   <Link href="/nhl-previews/">NHL</Link>
+                  <Link href="/soccer-previews/">Soccer</Link>
                   <Link href="/channels/">Channels</Link>
                 </div>
               </details>

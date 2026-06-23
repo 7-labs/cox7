@@ -97,9 +97,29 @@ export function inferType(title: string): PreviewType {
   return "game-preview";
 }
 
+const SOCCER_TERMS = [
+  "soccer",
+  "premier league",
+  "champions league",
+  "europa league",
+  "world cup",
+  "matchday",
+  "la liga",
+  "bundesliga",
+  "serie a",
+  "uefa",
+  "mls"
+];
+
+export function isSoccerText(text: string) {
+  const normalized = normalizeText(text);
+  return SOCCER_TERMS.some((term) => normalized.includes(term));
+}
+
 export function inferLeague(title: string, channelTitle: string): LeagueSlug {
   const haystack = normalizeText(`${title} ${channelTitle}`);
 
+  if (isSoccerText(haystack)) return "soccer";
   if (haystack.includes("draft")) return "draft";
   if (haystack.includes("nba") || haystack.includes("basketball") || haystack.includes("mavs") || haystack.includes("clippers")) return "nba";
   if (haystack.includes("mlb") || haystack.includes("baseball") || haystack.includes("world series")) return "mlb";

@@ -5,6 +5,7 @@ import {
   inferLeague,
   inferType,
   isExtremeLongVideo,
+  isSoccerText,
   makeVideoSlug,
   matchesLeague,
   matchesType,
@@ -67,6 +68,9 @@ export function resolveLeague(
 ): LeagueSlug {
   const haystack = normalizeText(`${title} ${description} ${channelTitle}`);
 
+  // Soccer first: a Champions League "finals" or "football" video must not fall
+  // into the NBA/NFL keyword checks below.
+  if (isSoccerText(haystack)) return "soccer";
   if (haystack.includes("draft")) return "draft";
   if (haystack.includes("nba") || haystack.includes("basketball") || haystack.includes("finals")) return "nba";
   if (haystack.includes("mlb") || haystack.includes("baseball") || haystack.includes("world series")) return "mlb";

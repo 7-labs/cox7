@@ -1,6 +1,6 @@
 import Link from "next/link";
 import VideoCard from "@/components/VideoCard";
-import { getLeaguePage, leaguePages, site, type LeagueSlug } from "@/lib/c7-data";
+import { getLeaguePage, leagueIcons, leaguePages, site, type LeagueSlug } from "@/lib/c7-data";
 import { getInventoryStats, getLeagueVideos } from "@/lib/inventory";
 
 export default async function LeagueLanding({ slug }: { slug: LeagueSlug }) {
@@ -52,7 +52,7 @@ export default async function LeagueLanding({ slug }: { slug: LeagueSlug }) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="page-header">
-        <p className="eyebrow">{page.name} preview hub</p>
+        <p className="eyebrow"><span aria-hidden="true">{leagueIcons[slug]}</span> {page.name} preview hub</p>
         <h1>{page.title}</h1>
         <p className="lead">{page.description}</p>
         <div className="hero-actions">

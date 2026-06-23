@@ -328,6 +328,34 @@ export const seedVideos: PreviewVideo[] = [
     summary:
       "Official NHL Stanley Cup Playoffs preview video for fans browsing historical playoff hype and preview pages.",
     tags: ["NHL", "Stanley Cup", "playoff preview", "official video"]
+  },
+  {
+    id: "AdYE_hxYV5k",
+    slug: "norway-vs-senegal-preview-haaland-AdYE_hxYV5k",
+    title: "Norway vs. Senegal PREVIEW: WATCH OUT for Erling Haaland",
+    channelTitle: "ESPN FC",
+    channelId: "UC6c1z7bA__85CIWZ_jpCK-Q",
+    league: "soccer",
+    type: "game-preview",
+    sourceLevel: "network-official",
+    publishedAt: "2026-06-22T13:33:38Z",
+    summary:
+      "ESPN FC soccer match preview breaking down a Norway vs Senegal matchup, embedded from YouTube with source attribution.",
+    tags: ["Soccer", "ESPN FC", "match preview", "World Cup", "Haaland"]
+  },
+  {
+    id: "HWHNSAXN5zM",
+    slug: "golazo-matchday-live-norway-vs-senegal-preview-HWHNSAXN5zM",
+    title: "Golazo Matchday LIVE: Norway vs. Senegal PREVIEW",
+    channelTitle: "CBS Sports Golazo",
+    channelId: "UCET00YnetHT7tOpu12v8jxg",
+    league: "soccer",
+    type: "game-preview",
+    sourceLevel: "network-official",
+    publishedAt: "2026-06-23T00:03:08Z",
+    summary:
+      "CBS Sports Golazo matchday preview show covering pre-match analysis for a Norway vs Senegal soccer fixture.",
+    tags: ["Soccer", "CBS Sports Golazo", "matchday preview", "pre-match"]
   }
 ];
 

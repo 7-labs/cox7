@@ -489,6 +489,23 @@ h3 {
   background: rgba(255, 255, 255, 0.052);
 }
 
+.league-card {
+  transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+}
+
+.league-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(120, 255, 214, 0.45);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.league-icon {
+  display: block;
+  font-size: 2rem;
+  line-height: 1;
+  margin-bottom: 10px;
+}
+
 .info-card strong {
   display: block;
   margin-bottom: 8px;
@@ -688,6 +705,10 @@ h3 {
   *::after {
     animation: none !important;
     transition: none !important;
+  }
+
+  .league-card:hover {
+    transform: none;
   }
 }
 
