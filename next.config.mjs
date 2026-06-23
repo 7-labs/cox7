@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   poweredByHeader: false,
+  // Canonical URLs, sitemap entries, and all internal <Link>s use trailing
+  // slashes; serve them directly (200) instead of 308-redirecting, so the
+  // served URL matches the declared rel=canonical.
+  trailingSlash: true,
   outputFileTracingRoot: process.cwd(),
   images: {
     remotePatterns: [

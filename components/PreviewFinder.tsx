@@ -96,7 +96,7 @@ export default function PreviewFinder({
     const params = new URLSearchParams({ q: effectiveQuery, league, type });
 
     try {
-      const response = await fetch(`/api/search?${params.toString()}`);
+      const response = await fetch(`/api/search/?${params.toString()}`);
       const payload = (await response.json()) as SearchResponse;
       const fallbackPreview = filterSeedVideos({ query: effectiveQuery, league, type });
       setResults(payload.results.length > 0 ? payload.results : fallbackPreview);

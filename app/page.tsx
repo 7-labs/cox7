@@ -13,7 +13,7 @@ const jsonLd = {
   description: site.description,
   potentialAction: {
     "@type": "SearchAction",
-    target: `${site.url}/search?q={search_term_string}`,
+    target: `${site.url}/search/?q={search_term_string}`,
     "query-input": "required name=search_term_string"
   }
 };
