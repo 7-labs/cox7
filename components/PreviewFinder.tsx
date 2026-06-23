@@ -121,80 +121,84 @@ export default function PreviewFinder({
 
   return (
     <section className="finder surface" aria-label="Official Sports Preview Finder">
-      <form onSubmit={runSearch}>
-        <label className="finder-label" htmlFor="preview-query">
-          <Icon name="search" size={16} />
-          Search team, league, event, or matchup
-        </label>
-        <div className="search-row">
-          <div className="input-wrap">
-            <Icon name="search" size={18} />
-            <input
-              id="preview-query"
-              className="input input--icon"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="Try: Super Bowl preview, NBA Draft preview, Stanley Cup preview"
-            />
-          </div>
-          <button className="btn" type="submit" disabled={isLoading}>
+      <div className="finder-controls">
+        <form onSubmit={runSearch}>
+          <label className="finder-label" htmlFor="preview-query">
             <Icon name="search" size={16} />
-            {isLoading ? "Searching" : "Find previews"}
-          </button>
-        </div>
-        <div className="chip-row" aria-label="Popular searches">
-          <span>Popular searches:</span>
-          {popularSearches.map((item) => (
-            <button className="chip" type="button" key={item} onClick={() => runSearch(undefined, item)} disabled={isLoading}>
-              {item}
+            Search team, league, event, or matchup
+          </label>
+          <div className="search-row">
+            <div className="input-wrap">
+              <Icon name="search" size={18} />
+              <input
+                id="preview-query"
+                className="input input--icon"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="Try: Super Bowl preview, NBA Draft preview"
+              />
+            </div>
+            <button className="btn" type="submit" disabled={isLoading}>
+              <Icon name="search" size={16} />
+              {isLoading ? "Searching" : "Find previews"}
             </button>
-          ))}
-        </div>
-        <div className="filter-row">
-          <select
-            aria-label="Filter by league"
-            className="select"
-            value={league}
-            onChange={(event) => handleLeagueChange(event.target.value as LeagueSlug | "all")}
-          >
-            <option value="all">All leagues</option>
-            {leaguePages.map((item) => (
-              <option value={item.slug} key={item.slug}>
-                {item.name}
-              </option>
-            ))}
-          </select>
-          <select
-            aria-label="Filter by preview type"
-            className="select"
-            value={type}
-            onChange={(event) => handleTypeChange(event.target.value as PreviewType | "all")}
-          >
-            {previewTypes.map((item) => (
-              <option value={item.value} key={item.value}>
-                {item.label}
-              </option>
-            ))}
-          </select>
-        </div>
-      </form>
-
-      <p className="finder-status" role="status">
-        {status}
-      </p>
-      {activeFilters ? <p className="finder-status">Active filters: {activeFilters}</p> : null}
-
-      <div className="results-list">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, index) => <div className="video-card skeleton-card" key={index} aria-hidden="true" />)
-        ) : visibleResults.length > 0 ? (
-          visibleResults.slice(0, 6).map((video, index) => <VideoCard video={video} compact priority={index === 0 && pathname === "/"} key={video.id} />)
-        ) : (
-          <div className="info-card notice">
-            <strong>No curated example result yet</strong>
-            <p>Run a live search to check YouTube for trusted, public, embeddable sports preview videos.</p>
           </div>
-        )}
+          <div className="filter-row">
+            <select
+              aria-label="Filter by league"
+              className="select"
+              value={league}
+              onChange={(event) => handleLeagueChange(event.target.value as LeagueSlug | "all")}
+            >
+              <option value="all">All leagues</option>
+              {leaguePages.map((item) => (
+                <option value={item.slug} key={item.slug}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
+            <select
+              aria-label="Filter by preview type"
+              className="select"
+              value={type}
+              onChange={(event) => handleTypeChange(event.target.value as PreviewType | "all")}
+            >
+              {previewTypes.map((item) => (
+                <option value={item.value} key={item.value}>
+                  {item.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="chip-row" aria-label="Popular searches">
+            <span>Popular:</span>
+            {popularSearches.map((item) => (
+              <button className="chip" type="button" key={item} onClick={() => runSearch(undefined, item)} disabled={isLoading}>
+                {item}
+              </button>
+            ))}
+          </div>
+        </form>
+
+        <p className="finder-status" role="status">
+          {status}
+        </p>
+        {activeFilters ? <p className="finder-status">Active filters: {activeFilters}</p> : null}
+      </div>
+
+      <div className="finder-results">
+        <div className="results-list">
+          {isLoading ? (
+            Array.from({ length: 3 }).map((_, index) => <div className="video-card skeleton-card" key={index} aria-hidden="true" />)
+          ) : visibleResults.length > 0 ? (
+            visibleResults.slice(0, 6).map((video, index) => <VideoCard video={video} compact priority={index === 0 && pathname === "/"} key={video.id} />)
+          ) : (
+            <div className="info-card notice">
+              <strong>No curated example result yet</strong>
+              <p>Run a live search to check YouTube for trusted, public, embeddable sports preview videos.</p>
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

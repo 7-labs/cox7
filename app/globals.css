@@ -181,13 +181,13 @@ button {
 .section {
   width: min(var(--max), calc(100% - 32px));
   margin: 0 auto;
-  padding: 76px 0;
+  padding: 56px 0;
 }
 
 .hero {
   width: min(var(--max), calc(100% - 32px));
   margin: 0 auto;
-  padding: 72px 0 40px;
+  padding: 44px 0 32px;
 }
 
 .hero-head {
@@ -197,8 +197,8 @@ button {
 }
 
 .hero-finder {
-  max-width: 860px;
-  margin: 30px auto 0;
+  max-width: var(--max);
+  margin: 24px auto 0;
 }
 
 .hero-meta {
@@ -263,11 +263,11 @@ p {
 }
 
 h1 {
-  margin-bottom: 22px;
-  max-width: 980px;
-  font-size: clamp(2.6rem, 6vw, 4.6rem);
-  line-height: 0.98;
-  letter-spacing: -0.05em;
+  margin-bottom: 18px;
+  max-width: 900px;
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  line-height: 1.04;
+  letter-spacing: -0.035em;
 }
 
 .hero-head .lead {
@@ -276,21 +276,21 @@ h1 {
 }
 
 h2 {
-  font-size: clamp(2rem, 4.6vw, 4.2rem);
-  line-height: 0.96;
-  letter-spacing: -0.07em;
-  margin-bottom: 18px;
+  font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+  margin-bottom: 16px;
 }
 
 h3 {
-  font-size: 1.08rem;
-  letter-spacing: -0.025em;
+  font-size: 1.05rem;
+  letter-spacing: -0.02em;
 }
 
 .lead {
   color: var(--muted);
-  font-size: clamp(1.08rem, 2vw, 1.36rem);
-  max-width: 740px;
+  font-size: clamp(1.02rem, 1.4vw, 1.18rem);
+  max-width: 640px;
 }
 
 .hero-actions,
@@ -356,7 +356,48 @@ h3 {
 }
 
 .finder {
-  padding: 22px;
+  display: grid;
+  grid-template-columns: minmax(300px, 360px) minmax(0, 1fr);
+  gap: 20px;
+  padding: 20px;
+  align-items: start;
+}
+
+.finder-controls {
+  position: sticky;
+  top: 88px;
+}
+
+.finder-results {
+  min-width: 0;
+}
+
+.finder-results-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+/* The finder lays results beside its controls, so they show on the first screen. */
+.finder .results-list {
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .finder {
+    grid-template-columns: 1fr;
+  }
+
+  .finder-controls {
+    position: static;
+  }
 }
 
 .finder-label {
@@ -822,11 +863,16 @@ h3 {
 .page-header {
   width: min(920px, calc(100% - 32px));
   margin: 0 auto;
-  padding: 76px 0 32px;
+  padding: 44px 0 20px;
 }
 
 .page-header h1 {
-  font-size: clamp(2.8rem, 7vw, 6rem);
+  font-size: clamp(1.7rem, 3.4vw, 2.7rem);
+}
+
+/* Video pages: keep the embed near the top of the first screen. */
+.section.video-detail {
+  padding-top: 12px;
 }
 
 .content-block {
