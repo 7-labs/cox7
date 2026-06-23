@@ -1,0 +1,31 @@
+# Dependencies
+node_modules/
+updater/node_modules/
+
+# Build output
+.next/
+out/
+.open-next/
+.wrangler/
+updater/dist/
+
+# Secrets / env — NEVER commit (this repository is public)
+.env
+.env.local
+.env.*.local
+.dev.vars
+local.env.txt
+*.env.txt
+updater/.env
+
+# Internal ops, planning, and runtime-state files (kept out of the public repo)
+CLAUDE.md
+AGENTS.md
+docs/
+ops/
+PROJECT_STATE.md
+.codex-results/
+
+# OS
+.DS_Store
+**/.DS_Store

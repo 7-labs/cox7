@@ -1,0 +1,8 @@
+/favicon.ico
+  Cache-Control: public, max-age=604800, immutable
+
+/icon.svg
+  Cache-Control: public, max-age=604800, immutable
+
+/_next/static/*
+  Cache-Control: public, max-age=31536000, immutable

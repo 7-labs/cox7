@@ -1,0 +1,16 @@
+services:
+  cox7-updater:
+    build:
+      context: .
+      dockerfile: updater/Dockerfile
+    env_file:
+      - updater/.env
+    networks:
+      - supabase_default
+    restart: "no"
+    profiles:
+      - updater
+
+networks:
+  supabase_default:
+    external: true
