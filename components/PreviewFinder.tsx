@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { leaguePages, previewTypes, type LeagueSlug, type PreviewType, type PreviewVideo } from "@/lib/c7-data";
 import { filterSeedVideos, type SearchResponse } from "@/lib/search";
 import VideoCard from "@/components/VideoCard";
+import Icon from "@/components/Icon";
 
 const popularSearches = [
   "NFL game preview",
@@ -122,17 +123,22 @@ export default function PreviewFinder({
     <section className="finder surface" aria-label="Official Sports Preview Finder">
       <form onSubmit={runSearch}>
         <label className="finder-label" htmlFor="preview-query">
+          <Icon name="search" size={16} />
           Search team, league, event, or matchup
         </label>
         <div className="search-row">
-          <input
-            id="preview-query"
-            className="input"
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Try: Super Bowl preview, NBA Draft preview, Stanley Cup preview"
-          />
+          <div className="input-wrap">
+            <Icon name="search" size={18} />
+            <input
+              id="preview-query"
+              className="input input--icon"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder="Try: Super Bowl preview, NBA Draft preview, Stanley Cup preview"
+            />
+          </div>
           <button className="btn" type="submit" disabled={isLoading}>
+            <Icon name="search" size={16} />
             {isLoading ? "Searching" : "Find previews"}
           </button>
         </div>

@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import PreviewFinder from "@/components/PreviewFinder";
 import VideoCard from "@/components/VideoCard";
 import { leagueIcons, leaguePages, site, trustedChannels, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
@@ -43,46 +44,62 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <section className="hero">
-        <div className="hero-grid">
-          <div>
-            <p className="eyebrow">Official Sports Preview Finder</p>
-            <h1>Find the next sports preview video without the noise.</h1>
-            <p className="lead">
-              C7 Sports Previews finds official and trusted YouTube videos for game previews, season previews, draft previews,
-              playoff previews, and upcoming sports broadcasts. Search a team, league, event, or matchup and jump straight to an
-              embedded source page.
-            </p>
-            {stats.lastRunAt ? <p className="finder-status">Last inventory update: {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</p> : null}
-            <div className="hero-actions">
-              <a className="btn" href="#finder">Use the finder</a>
-              <Link className="secondary-btn" href="/sports-previews/">
-                Browse latest previews
-              </Link>
-              <Link className="secondary-btn" href="/search/">
-                Open search page
-              </Link>
-            </div>
-          </div>
-          <div id="finder">
-            <PreviewFinder
-              defaultQuery={query}
-              defaultLeague={league}
-              defaultType={type}
-              initialVideos={initialVideos}
-              initialStatus={finderStatus}
-            />
+        <div className="hero-head">
+          <p className="eyebrow"><Icon name="sparkles" size={15} /> Official Sports Preview Finder</p>
+          <h1>Find the next sports preview without the noise.</h1>
+          <p className="lead">
+            Search a team, league, event, or matchup — and jump straight to an official or trusted, embeddable YouTube preview.
+          </p>
+          <div className="hero-meta">
+            {stats.lastRunAt ? (
+              <span className="hero-badge">
+                <Icon name="clock" size={14} />
+                Inventory updated {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}
+              </span>
+            ) : null}
+            {stats.total ? (
+              <span className="hero-badge">
+                <Icon name="grid" size={14} />
+                {stats.total} verified preview{stats.total === 1 ? "" : "s"}
+              </span>
+            ) : null}
           </div>
         </div>
+
+        <div id="finder" className="hero-finder">
+          <PreviewFinder
+            defaultQuery={query}
+            defaultLeague={league}
+            defaultType={type}
+            initialVideos={initialVideos}
+            initialStatus={finderStatus}
+          />
+        </div>
+
+        <div className="hero-actions hero-actions--center">
+          <Link className="btn" href="/sports-previews/">
+            <Icon name="grid" size={16} />
+            Browse latest previews
+          </Link>
+          <Link className="secondary-btn" href="/search/">
+            <Icon name="search" size={16} />
+            Open search page
+          </Link>
+        </div>
+
         <div className="stats-grid" aria-label="C7 project principles">
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon"><Icon name="shield" size={22} /></span>
             <strong>Official-first</strong>
             <p>Whitelist league and trusted sports channels before expanding discovery.</p>
           </div>
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon"><Icon name="embed" size={22} /></span>
             <strong>Embed, not copy</strong>
             <p>No video downloads, no mirrored files, and clear YouTube source attribution.</p>
           </div>
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon"><Icon name="trending" size={22} /></span>
             <strong>SEO pages</strong>
             <p>League, draft, upcoming, channel, archive, and video detail pages create long-tail entry points.</p>
           </div>
@@ -90,7 +107,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       <section className="section">
-        <p className="eyebrow">Browse by intent</p>
+        <p className="eyebrow"><Icon name="grid" size={14} /> Browse by intent</p>
         <h2>Built around how sports fans search.</h2>
         <div className="league-grid">
           {leaguePages.map((league) => (
@@ -98,16 +115,27 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               <span className="league-icon" aria-hidden="true">{leagueIcons[league.slug]}</span>
               <strong>{league.title}</strong>
               <p>{league.primaryIntent}</p>
-              <span className="text-link">Open {league.name} previews →</span>
+              <span className="text-link">
+                Open {league.name} previews
+                <Icon name="arrow" size={15} />
+              </span>
             </Link>
           ))}
         </div>
       </section>
 
       <section className="section">
-        <p className="eyebrow">Latest inventory</p>
-        <h2>Preview pages are already wired.</h2>
-        <div className="results-list">
+        <div className="section-head">
+          <div>
+            <p className="eyebrow"><Icon name="play" size={14} /> Latest inventory</p>
+            <h2>Fresh, verified previews.</h2>
+          </div>
+          <Link className="secondary-btn" href="/sports-previews/">
+            View all previews
+            <Icon name="arrow" size={16} />
+          </Link>
+        </div>
+        <div className="results-grid">
           {latestVideos.length > 0 ? (
             latestVideos.slice(0, 4).map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)
           ) : (
@@ -120,22 +148,26 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       <section className="section">
-        <p className="eyebrow">Source policy</p>
+        <p className="eyebrow"><Icon name="shield" size={14} /> Source policy</p>
         <h2>Not a replay scraper.</h2>
         <div className="feature-grid">
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon feature-icon--ok"><Icon name="check" size={20} /></span>
             <strong>Allowed</strong>
             <p>Embeddable YouTube previews from official or trusted sports channels.</p>
           </div>
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon feature-icon--no"><Icon name="cross" size={20} /></span>
             <strong>Filtered out</strong>
             <p>Full-game copies, betting-only clips, leaked video, and piracy-intent searches.</p>
           </div>
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon"><Icon name="filter" size={20} /></span>
             <strong>Independent value</strong>
             <p>Tags, league pages, channel context, archive routing, and preview-type filters.</p>
           </div>
-          <div className="info-card">
+          <div className="info-card feature-card">
+            <span className="feature-icon"><Icon name="zap" size={20} /></span>
             <strong>Ready to automate</strong>
             <p>The updater writes verified inventory daily so the request path stays independent from YouTube.</p>
           </div>
@@ -143,16 +175,20 @@ export default async function HomePage({ searchParams }: HomePageProps) {
       </section>
 
       <section className="section">
-        <p className="eyebrow">Trusted channel starter list</p>
+        <p className="eyebrow"><Icon name="youtube" size={14} /> Trusted channel starter list</p>
         <h2>Small whitelist first, then expand safely.</h2>
         <div className="channel-grid">
           {trustedChannels.slice(0, 4).map((channel) => (
-            <div className="info-card" key={channel.channelId}>
-              <strong>{channel.name}</strong>
-              <p>{channel.notes}</p>
-              <a className="text-link" href={channel.youtubeUrl} target="_blank" rel="noreferrer">
-                Open channel on YouTube →
-              </a>
+            <div className="info-card channel-card" key={channel.channelId}>
+              <span className="channel-mark" aria-hidden="true">{leagueIcons[channel.leagues[0]] ?? "🎬"}</span>
+              <div>
+                <strong>{channel.name}</strong>
+                <p>{channel.notes}</p>
+                <a className="text-link" href={channel.youtubeUrl} target="_blank" rel="noreferrer">
+                  <Icon name="youtube" size={16} />
+                  Open channel on YouTube
+                </a>
+              </div>
             </div>
           ))}
         </div>
