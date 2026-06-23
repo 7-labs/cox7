@@ -5,7 +5,8 @@
   "compatibility_date": "2026-06-23",
   "compatibility_flags": ["nodejs_compat"],
   "vars": {
-    "INVENTORY_SOURCE": "seed"
+    "INVENTORY_SOURCE": "supabase",
+    "SUPABASE_SCHEMA": "cox7"
   },
   "assets": {
     "directory": ".open-next/assets",

@@ -37,6 +37,10 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # First deploy serves curated seed inventory (no external DB dependency).
-          # Flip to "supabase" here and add SUPABASE_* secrets once the DB is provisioned.
-          INVENTORY_SOURCE: seed
+          # Build reads live inventory so all video pages pre-render and the
+          # sitemap is complete. Runtime reads come from the Worker's vars+secrets.
+          # If SUPABASE_* secrets are unset, the code falls back to curated seed.
+          INVENTORY_SOURCE: supabase
+          SUPABASE_REST_URL: ${{ secrets.SUPABASE_REST_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          SUPABASE_SCHEMA: ${{ secrets.SUPABASE_SCHEMA }}
