@@ -3,6 +3,7 @@ import { type PreviewVideo } from "../../lib/c7-data.js";
 import { toPreviewVideo, type YouTubeVideoItem } from "../../lib/verify.js";
 import { loadConfig, publicConfig } from "./config.js";
 import { log } from "./log.js";
+import { matchVideosToEvents, type MatchReport } from "./match.js";
 import { pingKuma, triggerDeployHook } from "./notify.js";
 import { seedInventory } from "./seed.js";
 import { createUpdateRun, finishUpdateRun, markRemovedVideos, trustedChannelToRow, upsertChannels, upsertVideos } from "./store.js";
@@ -17,6 +18,7 @@ type RunSummary = {
   quotaUnitsEstimated: number;
   status: "success" | "partial" | "failed";
   error?: string;
+  eventMatch?: MatchReport;
   channels: Array<{
     channel: string;
     uploads: number;
@@ -142,8 +144,33 @@ async function sweep(config = loadConfig(), dryRun = false): Promise<RunSummary>
 
   const dedupedVideos = Array.from(new Map(verifiedVideos.map((video) => [video.id, video])).values());
 
+  // Phase 2: bind videos to real games for accurate match status. Fails soft —
+  // on any error the original (unbound) videos are used so inventory is never lost.
+  let videosToStore = dedupedVideos;
+  let eventMatch: MatchReport | undefined;
+  try {
+    const matched = await matchVideosToEvents(dedupedVideos);
+    videosToStore = matched.videos;
+    eventMatch = matched.report;
+    log({
+      level: "info",
+      msg: "Event matching complete",
+      counts: {
+        eligible: eventMatch.eligible,
+        strong: eventMatch.matchedStrong,
+        weak: eventMatch.matchedWeak
+      }
+    });
+  } catch (error) {
+    log({
+      level: "warn",
+      msg: "Event matching skipped",
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+
   if (!dryRun) {
-    await upsertVideos(config, dedupedVideos);
+    await upsertVideos(config, videosToStore);
     await markRemovedVideos(config, [...removedIds]);
   }
 
@@ -169,11 +196,12 @@ async function sweep(config = loadConfig(), dryRun = false): Promise<RunSummary>
     channelsTotal: trustedChannels.length,
     channelsOk,
     videosSeen,
-    videosUpserted: dedupedVideos.length,
+    videosUpserted: videosToStore.length,
     videosRemoved: removedIds.size,
     quotaUnitsEstimated: tracker.current,
     status,
     error: channelErrors.length > 0 ? channelErrors.join(" | ") : undefined,
+    eventMatch,
     channels: channelSummaries
   };
 }
