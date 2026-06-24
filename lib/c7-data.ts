@@ -125,10 +125,10 @@ export const leaguePages: LeaguePage[] = [
     slug: "nba",
     path: "/nba-previews/",
     name: "NBA",
-    title: "NBA Game and Draft Previews",
+    title: "NBA Game and Finals Previews",
     description:
-      "Find NBA game previews, NBA Finals previews, draft preview videos, and official league or network pregame analysis.",
-    keywords: ["nba preview", "nba draft preview", "nba finals preview", "nba game preview"],
+      "Find NBA game previews, NBA Finals previews, and official league or network pregame analysis from trusted sources.",
+    keywords: ["nba preview", "nba finals preview", "nba game preview"],
     primaryIntent: "Find recent NBA preview videos without searching across noisy clips."
   },
   {
