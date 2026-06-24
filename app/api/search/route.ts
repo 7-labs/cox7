@@ -6,9 +6,13 @@ import { executeSearchRequest } from "@/lib/youtube-search";
 export const dynamic = "force-dynamic";
 
 function getClientKey(request: Request) {
+  // Prefer Cloudflare's verified client IP. `x-forwarded-for` is client-spoofable
+  // on Workers, so it must not be the primary rate-limit key; keep it (and
+  // `x-real-ip`) only as fallbacks for non-CF runtimes.
+  const cfConnectingIp = request.headers.get("cf-connecting-ip");
   const forwardedFor = request.headers.get("x-forwarded-for");
   const realIp = request.headers.get("x-real-ip");
-  const candidate = forwardedFor?.split(",")[0]?.trim() || realIp || "anonymous";
+  const candidate = cfConnectingIp?.trim() || forwardedFor?.split(",")[0]?.trim() || realIp || "anonymous";
 
   return candidate.slice(0, 120);
 }

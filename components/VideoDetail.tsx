@@ -138,6 +138,13 @@ export default function VideoDetail({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd(video)) }} />
       <section className="page-header">
+        <nav aria-label="Breadcrumb" className="breadcrumb">
+          <ol>
+            <li><Link className="text-link" href="/">Home</Link></li>
+            {league ? <li><Link className="text-link" href={league.path}>{league.name}</Link></li> : null}
+            <li><span aria-current="page">{video.title}</span></li>
+          </ol>
+        </nav>
         <p className="eyebrow">
           <StatusBadge status={status} />
           {video.channelTitle} preview video
@@ -182,7 +189,7 @@ export default function VideoDetail({
               </span>
             </p>
           ) : null}
-          <p>Channel: {video.channelTitle}</p>
+          <p>Channel: <Link className="text-link" href="/channels/">{video.channelTitle}</Link></p>
           <p>Published: {formatDate(video.publishedAt)}</p>
           <p>Source level: {video.sourceLevel.replace(/-/g, " ")}</p>
           {video.lastCheckedAt ? <p>Last checked: {formatDate(video.lastCheckedAt)}</p> : null}
@@ -194,6 +201,16 @@ export default function VideoDetail({
       </section>
 
       <section className="section detail-grid">
+        {video.homeTeam && video.awayTeam ? (
+          <article className="info-card">
+            <strong>About this matchup</strong>
+            <p>
+              This preview covers {video.awayTeam} at {video.homeTeam}
+              {formatEventTime(video.eventStartTime) ? ` on ${formatEventTime(video.eventStartTime)}` : ""} — a{" "}
+              {labelFromType(video.type)} from {video.channelTitle}.
+            </p>
+          </article>
+        ) : null}
         <article className="info-card">
           <strong>Why this video is listed</strong>
           <p>{whyListed}</p>
@@ -210,9 +227,9 @@ export default function VideoDetail({
           <strong>Related search intents</strong>
           <div className="intent-list">
             {relatedSearches(video).map((item) => (
-              <span className="pill" key={item}>
+              <Link className="pill" href={`/search/?q=${encodeURIComponent(item)}`} key={item}>
                 {item}
-              </span>
+              </Link>
             ))}
           </div>
         </article>
