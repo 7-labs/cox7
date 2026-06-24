@@ -169,9 +169,29 @@ button {
   align-items: flex-start;
 }
 
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-link .icon {
+  color: var(--faint);
+  transition: color 0.16s ease;
+}
+
+.nav-emoji {
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
 .nav-links a:hover,
 .footer a:hover {
   color: var(--text);
+}
+
+.nav-link:hover .icon {
+  color: var(--accent);
 }
 
 .main {
@@ -191,9 +211,14 @@ button {
 }
 
 .hero-head {
-  max-width: 760px;
+  max-width: 1080px;
   margin: 0 auto;
   text-align: center;
+}
+
+.hero-head h1 {
+  max-width: none;
+  white-space: nowrap;
 }
 
 .hero-finder {
@@ -265,7 +290,7 @@ p {
 h1 {
   margin-bottom: 18px;
   max-width: 900px;
-  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  font-size: clamp(1.9rem, 3.4vw, 2.6rem);
   line-height: 1.04;
   letter-spacing: -0.035em;
 }
@@ -867,12 +892,21 @@ h3 {
 }
 
 .page-header h1 {
-  font-size: clamp(1.7rem, 3.4vw, 2.7rem);
+  font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Video pages: keep the embed near the top of the first screen. */
 .section.video-detail {
   padding-top: 12px;
+}
+
+/* Listing pages: pull the video grid up under the header. */
+.section--tight {
+  padding-top: 16px;
 }
 
 .content-block {
@@ -990,6 +1024,10 @@ h3 {
   .channel-grid,
   .feature-grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero-head h1 {
+    white-space: normal;
   }
 
   .nav {

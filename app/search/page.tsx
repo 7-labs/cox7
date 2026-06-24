@@ -74,7 +74,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section section--tight">
         <PreviewFinder
           defaultQuery={filters.query}
           defaultLeague={filters.league}

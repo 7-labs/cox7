@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import VideoCard from "@/components/VideoCard";
-import { leaguePages, site } from "@/lib/c7-data";
+import { leagueIcons, leaguePages, site } from "@/lib/c7-data";
 import { getInventoryStats, getVideos } from "@/lib/inventory";
 
 export const metadata: Metadata = {
@@ -48,32 +49,33 @@ export default async function SportsPreviewsPage() {
         </div>
       </section>
 
-      <section className="section">
-        <p className="eyebrow">League hubs</p>
-        <h2>Start from the fan intent.</h2>
-        <div className="league-grid">
-          {leaguePages.map((league) => (
-            <Link className="info-card" href={league.path} key={league.slug}>
-              <strong>{league.title}</strong>
-              <p>{league.description}</p>
-              <span className="text-link">Open hub →</span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="section">
-        <p className="eyebrow">Current inventory pages</p>
+      <section className="section section--tight">
+        <p className="eyebrow"><Icon name="play" size={14} /> Current inventory pages</p>
         <h2>Embeddable preview pages.</h2>
-        <div className="results-list">
+        <div className="results-grid">
           {videos.length > 0 ? (
-            videos.map((video) => <VideoCard video={video} key={video.id} />)
+            videos.map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)
           ) : (
             <div className="info-card notice">
               <strong>No inventory page yet</strong>
               <p>The seed fallback remains available until the daily updater writes the first verified rows.</p>
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="section">
+        <p className="eyebrow"><Icon name="grid" size={14} /> League hubs</p>
+        <h2>Start from the fan intent.</h2>
+        <div className="league-grid">
+          {leaguePages.map((league) => (
+            <Link className="info-card league-card" href={league.path} key={league.slug}>
+              <span className="league-icon" aria-hidden="true">{leagueIcons[league.slug]}</span>
+              <strong>{league.title}</strong>
+              <p>{league.description}</p>
+              <span className="text-link">Open hub <Icon name="arrow" size={15} /></span>
+            </Link>
+          ))}
         </div>
       </section>
     </>

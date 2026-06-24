@@ -1,7 +1,32 @@
 import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
-import { site } from "@/lib/c7-data";
+import Icon from "@/components/Icon";
+import { leagueIcons, site } from "@/lib/c7-data";
+
+const navLinks: Array<{ href: string; label: string; icon?: React.ReactNode; emoji?: string }> = [
+  { href: "/sports-previews/", label: "All previews", icon: <Icon name="grid" size={15} /> },
+  { href: "/search/", label: "Search", icon: <Icon name="search" size={15} /> },
+  { href: "/nfl-previews/", label: "NFL", emoji: leagueIcons.nfl },
+  { href: "/nba-previews/", label: "NBA", emoji: leagueIcons.nba },
+  { href: "/mlb-previews/", label: "MLB", emoji: leagueIcons.mlb },
+  { href: "/nhl-previews/", label: "NHL", emoji: leagueIcons.nhl },
+  { href: "/soccer-previews/", label: "Soccer", emoji: leagueIcons.soccer },
+  { href: "/channels/", label: "Channels", icon: <Icon name="youtube" size={15} /> }
+];
+
+function NavItems() {
+  return (
+    <>
+      {navLinks.map((link) => (
+        <Link className="nav-link" href={link.href} key={link.href}>
+          {link.emoji ? <span className="nav-emoji" aria-hidden="true">{link.emoji}</span> : link.icon}
+          <span>{link.label}</span>
+        </Link>
+      ))}
+    </>
+  );
+}
 
 export const metadata: Metadata = {
   metadataBase: new URL(site.url),
@@ -47,26 +72,15 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <span>Sports Previews</span>
               </Link>
               <div className="nav-links nav-links-desktop">
-                <Link href="/sports-previews/">All previews</Link>
-                <Link href="/search/">Search</Link>
-                <Link href="/nfl-previews/">NFL</Link>
-                <Link href="/nba-previews/">NBA</Link>
-                <Link href="/mlb-previews/">MLB</Link>
-                <Link href="/nhl-previews/">NHL</Link>
-                <Link href="/soccer-previews/">Soccer</Link>
-                <Link href="/channels/">Channels</Link>
+                <NavItems />
               </div>
               <details className="nav-disclosure">
-                <summary>Browse</summary>
+                <summary>
+                  <Icon name="grid" size={16} />
+                  Browse
+                </summary>
                 <div className="nav-links">
-                  <Link href="/sports-previews/">All previews</Link>
-                  <Link href="/search/">Search</Link>
-                  <Link href="/nfl-previews/">NFL</Link>
-                  <Link href="/nba-previews/">NBA</Link>
-                  <Link href="/mlb-previews/">MLB</Link>
-                  <Link href="/nhl-previews/">NHL</Link>
-                  <Link href="/soccer-previews/">Soccer</Link>
-                  <Link href="/channels/">Channels</Link>
+                  <NavItems />
                 </div>
               </details>
             </nav>

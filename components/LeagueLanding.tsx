@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import VideoCard from "@/components/VideoCard";
 import { getLeaguePage, leagueIcons, leaguePages, site, type LeagueSlug } from "@/lib/c7-data";
 import { getInventoryStats, getLeagueVideos } from "@/lib/inventory";
@@ -65,23 +66,22 @@ export default async function LeagueLanding({ slug }: { slug: LeagueSlug }) {
         </div>
       </section>
 
-      <section className="content-block surface">
-        <h2>What this page is for</h2>
-        <p className="copy">{page.primaryIntent}</p>
-        {stats.lastRunAt ? <p className="finder-status">Last inventory update: {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</p> : null}
-        <ul>
-          {page.keywords.map((keyword) => (
-            <li key={keyword}>{keyword}</li>
-          ))}
-        </ul>
-      </section>
-
-      <section className="section">
-        <p className="eyebrow">Latest matching inventory videos</p>
-        <h2>Video detail pages ready for crawling.</h2>
-        <div className="results-list">
+      <section className="section section--tight">
+        <div className="section-head">
+          <div>
+            <p className="eyebrow"><Icon name="play" size={14} /> {page.name} preview videos</p>
+            <h2>Latest {page.name} previews.</h2>
+          </div>
+          {stats.lastRunAt ? (
+            <span className="hero-badge">
+              <Icon name="clock" size={14} />
+              Updated {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}
+            </span>
+          ) : null}
+        </div>
+        <div className="results-grid">
           {videos.length > 0 ? (
-            videos.map((video) => <VideoCard video={video} key={video.id} />)
+            videos.map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)
           ) : (
             <div className="info-card notice">
               <strong>No inventory video yet</strong>
@@ -92,6 +92,16 @@ export default async function LeagueLanding({ slug }: { slug: LeagueSlug }) {
             </div>
           )}
         </div>
+      </section>
+
+      <section className="content-block surface">
+        <h2>What this page is for</h2>
+        <p className="copy">{page.primaryIntent}</p>
+        <ul>
+          {page.keywords.map((keyword) => (
+            <li key={keyword}>{keyword}</li>
+          ))}
+        </ul>
       </section>
 
       <section className="section">
