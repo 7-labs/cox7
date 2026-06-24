@@ -39,7 +39,8 @@ export const eventDurationSeconds: Partial<Record<LeagueSlug, number>> = {
   nfl: Math.round(3.5 * 60 * 60),
   nba: Math.round(2.5 * 60 * 60),
   mlb: Math.round(3.5 * 60 * 60),
-  nhl: Math.round(2.5 * 60 * 60)
+  nhl: Math.round(2.5 * 60 * 60),
+  soccer: Math.round(2.25 * 60 * 60)
 };
 
 export type PreviewVideo = {

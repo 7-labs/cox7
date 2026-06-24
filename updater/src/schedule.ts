@@ -9,14 +9,16 @@ import type { ContentStatus, LeagueSlug } from "../../lib/c7-data.js";
 // provider is intentionally swappable (see ScheduleProvider) and always fails
 // soft: on any error it returns [] so the updater never breaks on a bad source.
 
-// cox7 league -> ESPN {sport}/{league} path. Leagues without a single-game
-// schedule (draft, upcoming) and soccer (deferred to Stage E, large club space)
-// are intentionally unmapped.
+// cox7 league -> ESPN {sport}/{league} path. Soccer uses the unified
+// "soccer/all" scoreboard (every competition in one call, incl. World Cup),
+// so club/competition ambiguity is avoided. Leagues without a single-game
+// schedule (draft, upcoming) are intentionally unmapped.
 const ESPN_LEAGUE_PATH: Partial<Record<LeagueSlug, string>> = {
   nfl: "football/nfl",
   nba: "basketball/nba",
   mlb: "baseball/mlb",
-  nhl: "hockey/nhl"
+  nhl: "hockey/nhl",
+  soccer: "soccer/all"
 };
 
 export function isScheduledLeague(league: LeagueSlug): boolean {
@@ -191,7 +193,9 @@ async function fetchByDates(league: LeagueSlug, dates: string): Promise<Schedule
   const cached = runCache.get(cacheKey);
   if (cached) return cached;
 
-  const url = `https://site.api.espn.com/apis/site/v2/sports/${leagueKey}/scoreboard?dates=${dates}&limit=200`;
+  // High limit so dense soccer windows (World Cup: ~17 games/day across all
+  // competitions) are not truncated.
+  const url = `https://site.api.espn.com/apis/site/v2/sports/${leagueKey}/scoreboard?dates=${dates}&limit=400`;
   const board = await fetchScoreboard(url);
   if (!board) {
     log({ level: "warn", msg: "Schedule fetch failed", channel: leagueKey });

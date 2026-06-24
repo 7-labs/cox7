@@ -4,7 +4,7 @@ import PreviewFinder from "@/components/PreviewFinder";
 import VideoCard from "@/components/VideoCard";
 import { leagueIcons, leaguePages, site, trustedChannels, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
 import { getInventoryStats, getVideos } from "@/lib/inventory";
-import { isLeagueSlug, isPreviewType, safeQuery, sortByStatus } from "@/lib/search";
+import { filterByStatus, isLeagueSlug, isPreviewType, safeQuery } from "@/lib/search";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -32,11 +32,16 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const type: PreviewType | "all" = typeParam === "all" ? "all" : isPreviewType(typeParam) ? typeParam : "all";
   const [{ videos: initialVideos, source }, { videos: latestPool }, stats] = await Promise.all([
     getVideos({ query, league, type }, { limit: 6 }),
-    getVideos({}, { limit: 12 }),
+    getVideos({}, { limit: 24 }),
     getInventoryStats()
   ]);
-  // Surface live/upcoming previews first, then newest completed ones.
-  const latestVideos = sortByStatus(latestPool);
+  // Split the homepage feed by lifecycle: live now, soonest upcoming, then
+  // newest completed. Sections render only when they have content.
+  const liveVideos = filterByStatus(latestPool, "live");
+  const upcomingVideos = filterByStatus(latestPool, "upcoming").sort((a, b) =>
+    (a.eventStartTime || "").localeCompare(b.eventStartTime || "")
+  );
+  const completedVideos = filterByStatus(latestPool, "completed");
   const finderStatus =
     source === "supabase"
       ? `Showing ${initialVideos.length} verified inventory result${initialVideos.length === 1 ? "" : "s"}.`
@@ -126,10 +131,30 @@ export default async function HomePage({ searchParams }: HomePageProps) {
         </div>
       </section>
 
+      {liveVideos.length > 0 ? (
+        <section className="section">
+          <p className="eyebrow"><span className="status-dot" aria-hidden="true" /> Live now</p>
+          <h2>Happening right now.</h2>
+          <div className="results-grid">
+            {liveVideos.slice(0, 4).map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)}
+          </div>
+        </section>
+      ) : null}
+
+      {upcomingVideos.length > 0 ? (
+        <section className="section">
+          <p className="eyebrow"><Icon name="clock" size={14} /> Upcoming previews</p>
+          <h2>Games still to come.</h2>
+          <div className="results-grid">
+            {upcomingVideos.slice(0, 4).map((video, index) => <VideoCard video={video} priority={index === 0 && liveVideos.length === 0} key={video.id} />)}
+          </div>
+        </section>
+      ) : null}
+
       <section className="section">
         <div className="section-head">
           <div>
-            <p className="eyebrow"><Icon name="play" size={14} /> Latest inventory</p>
+            <p className="eyebrow"><Icon name="play" size={14} /> {liveVideos.length + upcomingVideos.length > 0 ? "Latest completed" : "Latest inventory"}</p>
             <h2>Fresh, verified previews.</h2>
           </div>
           <Link className="secondary-btn" href="/sports-previews/">
@@ -138,8 +163,8 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </Link>
         </div>
         <div className="results-grid">
-          {latestVideos.length > 0 ? (
-            latestVideos.slice(0, 4).map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)
+          {completedVideos.length > 0 ? (
+            completedVideos.slice(0, 4).map((video, index) => <VideoCard video={video} priority={index === 0 && liveVideos.length + upcomingVideos.length === 0} key={video.id} />)
           ) : (
             <div className="info-card notice">
               <strong>No inventory video yet</strong>

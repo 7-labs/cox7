@@ -277,7 +277,8 @@ button {
 }
 
 .eyebrow:has(.icon)::before,
-.eyebrow:has(.status-badge)::before {
+.eyebrow:has(.status-badge)::before,
+.eyebrow:has(.status-dot)::before {
   display: none;
 }
 
