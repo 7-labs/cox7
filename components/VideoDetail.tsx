@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import StatusBadge from "@/components/StatusBadge";
 import VideoCard from "@/components/VideoCard";
 import VideoEmbed from "@/components/VideoEmbed";
@@ -24,6 +25,18 @@ function formatDate(date: string) {
     day: "numeric",
     year: "numeric"
   }).format(new Date(date));
+}
+
+function formatEventTime(iso?: string) {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (!Number.isFinite(date.getTime())) return null;
+  const base = { month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit" } as const;
+  try {
+    return new Intl.DateTimeFormat("en", { ...base, timeZone: "America/New_York", timeZoneName: "short" }).format(date);
+  } catch {
+    return `${new Intl.DateTimeFormat("en", { ...base, timeZone: "UTC" }).format(date)} UTC`;
+  }
 }
 
 function labelFromType(type: PreviewVideo["type"]) {
@@ -160,6 +173,15 @@ export default function VideoDetail({
           </p>
           <h2>Video source</h2>
           <p className="detail-status">{contentStatusMeta[status].label}: {STATUS_COPY[status]}</p>
+          {video.homeTeam && video.awayTeam ? (
+            <p className="detail-event">
+              <Icon name="calendar" size={15} />
+              <span>
+                {video.awayTeam} @ {video.homeTeam}
+                {formatEventTime(video.eventStartTime) ? ` · ${formatEventTime(video.eventStartTime)}` : ""}
+              </span>
+            </p>
+          ) : null}
           <p>Channel: {video.channelTitle}</p>
           <p>Published: {formatDate(video.publishedAt)}</p>
           <p>Source level: {video.sourceLevel.replace(/-/g, " ")}</p>

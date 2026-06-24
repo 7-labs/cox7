@@ -1,6 +1,8 @@
 import {
   allowedChannelIds,
   blockedTerms,
+  DEFAULT_EVENT_DURATION_SECONDS,
+  eventDurationSeconds,
   leaguePages,
   previewIntentTerms,
   seedVideos,
@@ -197,11 +199,25 @@ export function matchesType(videoType: PreviewType, requestedType: PreviewType |
   return requestedType === "all" || videoType === requestedType;
 }
 
-// --- Content status (Phase 1: video-state derivation) ---------------------
-// Maps YouTube's `liveBroadcastContent` ("live" | "upcoming" | "none") onto
-// C7's lifecycle status. A regular VOD preview upload ("none") is treated as
-// `completed`; Phase 2 will override this from a sports-schedule source.
-export function deriveContentStatus(video: Pick<PreviewVideo, "liveBroadcastContent">): ContentStatus {
+// --- Content status -------------------------------------------------------
+// Phase 2: when a video is bound to a real game (`eventStartTime`), recompute
+// the match state from the start time + the league's typical duration so the
+// status stays accurate between updater runs. Otherwise fall back to the
+// Phase 1 heuristic over YouTube's `liveBroadcastContent`.
+type StatusInput = Pick<PreviewVideo, "liveBroadcastContent" | "eventStartTime" | "league">;
+
+export function deriveContentStatus(video: StatusInput, now: number = Date.now()): ContentStatus {
+  if (video.eventStartTime) {
+    const start = new Date(video.eventStartTime).getTime();
+    if (Number.isFinite(start)) {
+      const windowSeconds = eventDurationSeconds[video.league] ?? DEFAULT_EVENT_DURATION_SECONDS;
+      const end = start + windowSeconds * 1000;
+      if (now < start) return "upcoming";
+      if (now < end) return "live";
+      return "completed";
+    }
+  }
+
   const state = (video.liveBroadcastContent || "").toLowerCase();
   if (state === "live") return "live";
   if (state === "upcoming") return "upcoming";

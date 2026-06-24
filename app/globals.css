@@ -766,6 +766,46 @@ h3 {
   font-size: 0.92rem;
 }
 
+/* Bound-event matchup + scheduled time */
+.card-event {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  margin: 0 0 10px;
+  font-size: 0.86rem;
+  color: var(--muted);
+}
+
+.card-event-teams {
+  font-weight: 680;
+  color: var(--text);
+}
+
+.card-event-time {
+  font-variant-numeric: tabular-nums;
+  color: var(--faint);
+}
+
+.card-event .icon,
+.detail-event .icon {
+  color: var(--faint);
+  vertical-align: 0;
+}
+
+.detail-event {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.detail-event span {
+  color: var(--text);
+}
+
 .meta-inline {
   display: inline-flex;
   align-items: center;

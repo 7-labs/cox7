@@ -25,6 +25,19 @@ function labelFromType(type: PreviewVideo["type"]) {
     .join(" ");
 }
 
+function formatEventTime(iso?: string) {
+  if (!iso) return null;
+  const date = new Date(iso);
+  if (!Number.isFinite(date.getTime())) return null;
+  const base = { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" } as const;
+  try {
+    return new Intl.DateTimeFormat("en", { ...base, timeZone: "America/New_York", timeZoneName: "short" }).format(date);
+  } catch {
+    // Runtime without IANA tz data: fall back to UTC.
+    return `${new Intl.DateTimeFormat("en", { ...base, timeZone: "UTC" }).format(date)} UTC`;
+  }
+}
+
 function formatDuration(totalSeconds?: number) {
   if (!totalSeconds || totalSeconds <= 0) return null;
   const h = Math.floor(totalSeconds / 3600);
@@ -97,6 +110,13 @@ export default function VideoCard({ video, compact = false, priority = false }: 
         <h3>
           <Link href={detailHref(video)}>{video.title}</Link>
         </h3>
+        {video.homeTeam && video.awayTeam ? (
+          <p className="card-event">
+            <Icon name="calendar" size={14} />
+            <span className="card-event-teams">{video.awayTeam} @ {video.homeTeam}</span>
+            {video.eventStartTime ? <span className="card-event-time">{formatEventTime(video.eventStartTime)}</span> : null}
+          </p>
+        ) : null}
         {!compact ? <p>{video.summary}</p> : null}
         <div className="card-meta card-meta--source">
           <span>{sourceLabel(video)}</span>

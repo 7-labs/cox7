@@ -31,6 +31,17 @@ export const contentStatusMeta: Record<ContentStatus, { label: string; short: st
   completed: { label: "Completed", short: "Completed" }
 };
 
+// Typical game length per league, used to recompute live/completed at read time
+// from a bound event's start. A game is treated as "live" from kickoff until
+// start + this window, then "completed".
+export const DEFAULT_EVENT_DURATION_SECONDS = 3 * 60 * 60;
+export const eventDurationSeconds: Partial<Record<LeagueSlug, number>> = {
+  nfl: Math.round(3.5 * 60 * 60),
+  nba: Math.round(2.5 * 60 * 60),
+  mlb: Math.round(3.5 * 60 * 60),
+  nhl: Math.round(2.5 * 60 * 60)
+};
+
 export type PreviewVideo = {
   id: string;
   slug: string;
