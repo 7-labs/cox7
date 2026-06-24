@@ -57,6 +57,16 @@ export type PreviewVideo = {
   lastCheckedAt?: string;
   lastVerifiedAt?: string;
   updatedAt?: string;
+  // Phase 2: real sports-event binding (all optional; null until a video is
+  // matched to a scheduled game). `eventStartTime` drives request-time status
+  // recompute; `eventStatus` is the updater's last snapshot.
+  eventId?: string;
+  eventLeague?: string;
+  eventStartTime?: string;
+  eventStatus?: ContentStatus;
+  homeTeam?: string;
+  awayTeam?: string;
+  eventMatch?: "strong" | "weak";
 };
 
 export type LeaguePage = {

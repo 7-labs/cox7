@@ -1,4 +1,4 @@
-import { type PreviewVideo, type TrustedChannel } from "@/lib/c7-data";
+import { type ContentStatus, type PreviewVideo, type TrustedChannel } from "@/lib/c7-data";
 
 export type VideoRow = {
   video_id: string;
@@ -26,6 +26,14 @@ export type VideoRow = {
   last_checked_at: string;
   last_verified_at?: string | null;
   updated_at: string;
+  // Phase 2: sports-event binding columns (nullable; added in Stage A migration).
+  event_id?: string | null;
+  event_league?: string | null;
+  event_start_time?: string | null;
+  event_status?: string | null;
+  home_team?: string | null;
+  away_team?: string | null;
+  event_match?: string | null;
 };
 
 export type VideoRowInsert = Omit<VideoRow, "search_text">;
@@ -88,7 +96,14 @@ export function rowToPreviewVideo(row: VideoRow): PreviewVideo {
     firstSeenAt: row.first_seen_at,
     lastCheckedAt: row.last_checked_at,
     lastVerifiedAt: row.last_verified_at || undefined,
-    updatedAt: row.updated_at
+    updatedAt: row.updated_at,
+    eventId: row.event_id || undefined,
+    eventLeague: row.event_league || undefined,
+    eventStartTime: row.event_start_time || undefined,
+    eventStatus: (row.event_status as ContentStatus) || undefined,
+    homeTeam: row.home_team || undefined,
+    awayTeam: row.away_team || undefined,
+    eventMatch: (row.event_match as PreviewVideo["eventMatch"]) || undefined
   };
 }
 
@@ -119,7 +134,14 @@ export function previewVideoToRow(video: PreviewVideo): VideoRowInsert {
     first_seen_at: video.firstSeenAt || video.publishedAt,
     last_checked_at: video.lastCheckedAt || now,
     last_verified_at: video.lastVerifiedAt || video.lastCheckedAt || now,
-    updated_at: video.updatedAt || now
+    updated_at: video.updatedAt || now,
+    event_id: video.eventId ?? null,
+    event_league: video.eventLeague ?? null,
+    event_start_time: video.eventStartTime ?? null,
+    event_status: video.eventStatus ?? null,
+    home_team: video.homeTeam ?? null,
+    away_team: video.awayTeam ?? null,
+    event_match: video.eventMatch ?? null
   };
 }
 
@@ -153,7 +175,14 @@ function assertVideoRoundTrip() {
     first_seen_at: "2026-06-23T00:00:00Z",
     last_checked_at: "2026-06-23T00:00:00Z",
     last_verified_at: "2026-06-23T00:00:00Z",
-    updated_at: "2026-06-23T00:00:00Z"
+    updated_at: "2026-06-23T00:00:00Z",
+    event_id: "401815868",
+    event_league: "baseball/mlb",
+    event_start_time: "2026-06-23T20:07:00Z",
+    event_status: "completed",
+    home_team: "Houston Astros",
+    away_team: "Toronto Blue Jays",
+    event_match: "strong"
   };
 
   const roundTrip = previewVideoToRow(rowToPreviewVideo(sampleRow));
@@ -181,7 +210,14 @@ function assertVideoRoundTrip() {
     "first_seen_at",
     "last_checked_at",
     "last_verified_at",
-    "updated_at"
+    "updated_at",
+    "event_id",
+    "event_league",
+    "event_start_time",
+    "event_status",
+    "home_team",
+    "away_team",
+    "event_match"
   ];
 
   for (const key of keys) {
