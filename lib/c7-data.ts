@@ -20,6 +20,17 @@ export type PreviewType =
 
 export type SourceLevel = "league-official" | "network-official" | "trusted-sports-channel";
 
+// C7 content lifecycle status. Phase 1 derives this from the YouTube
+// `liveBroadcastContent` field (video state). Phase 2 will refine it from a
+// real sports-schedule source so it reflects the *match* state.
+export type ContentStatus = "live" | "upcoming" | "completed";
+
+export const contentStatusMeta: Record<ContentStatus, { label: string; short: string }> = {
+  live: { label: "Live now", short: "Live" },
+  upcoming: { label: "Upcoming", short: "Upcoming" },
+  completed: { label: "Completed", short: "Completed" }
+};
+
 export type PreviewVideo = {
   id: string;
   slug: string;

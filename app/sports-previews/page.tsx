@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Icon from "@/components/Icon";
 import VideoCard from "@/components/VideoCard";
-import { leagueIcons, leaguePages, site } from "@/lib/c7-data";
+import { contentStatusMeta, leagueIcons, leaguePages, site, type ContentStatus } from "@/lib/c7-data";
 import { getInventoryStats, getVideos } from "@/lib/inventory";
+import { filterByStatus, isContentStatus, sortByStatus } from "@/lib/search";
 
 export const metadata: Metadata = {
   title: "Sports Preview Videos",
@@ -14,8 +15,24 @@ export const metadata: Metadata = {
   }
 };
 
-export default async function SportsPreviewsPage() {
-  const [{ videos }, stats] = await Promise.all([getVideos({}, { limit: 24 }), getInventoryStats()]);
+const STATUS_TABS: Array<{ value: ContentStatus | "all"; label: string }> = [
+  { value: "all", label: "All" },
+  { value: "upcoming", label: contentStatusMeta.upcoming.label },
+  { value: "live", label: contentStatusMeta.live.label },
+  { value: "completed", label: contentStatusMeta.completed.label }
+];
+
+type SportsPreviewsPageProps = {
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function SportsPreviewsPage({ searchParams }: SportsPreviewsPageProps) {
+  const params = (await searchParams) || {};
+  const statusParam = typeof params.status === "string" ? params.status : null;
+  const activeStatus: ContentStatus | "all" = isContentStatus(statusParam) ? statusParam : "all";
+
+  const [{ videos: allVideos }, stats] = await Promise.all([getVideos({}, { limit: 24 }), getInventoryStats()]);
+  const videos = sortByStatus(filterByStatus(allVideos, activeStatus));
   const itemList = {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -52,13 +69,33 @@ export default async function SportsPreviewsPage() {
       <section className="section section--tight">
         <p className="eyebrow"><Icon name="play" size={14} /> Current inventory pages</p>
         <h2>Embeddable preview pages.</h2>
+        <div className="status-tabs" role="tablist" aria-label="Filter previews by status">
+          {STATUS_TABS.map((tab) => {
+            const href = tab.value === "all" ? "/sports-previews/" : `/sports-previews/?status=${tab.value}`;
+            const isActive = tab.value === activeStatus;
+            return (
+              <Link
+                className={`status-tab${isActive ? " status-tab--active" : ""}`}
+                href={href}
+                key={tab.value}
+                aria-current={isActive ? "page" : undefined}
+              >
+                {tab.label}
+              </Link>
+            );
+          })}
+        </div>
         <div className="results-grid">
           {videos.length > 0 ? (
             videos.map((video, index) => <VideoCard video={video} priority={index === 0} key={video.id} />)
           ) : (
             <div className="info-card notice">
-              <strong>No inventory page yet</strong>
-              <p>The seed fallback remains available until the daily updater writes the first verified rows.</p>
+              <strong>No {activeStatus === "all" ? "" : `${contentStatusMeta[activeStatus].label.toLowerCase()} `}previews yet</strong>
+              <p>
+                {activeStatus === "all"
+                  ? "The seed fallback remains available until the daily updater writes the first verified rows."
+                  : "Nothing matches this status right now. Live and upcoming previews appear here once the inventory captures live broadcasts."}
+              </p>
             </div>
           )}
         </div>

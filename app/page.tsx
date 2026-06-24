@@ -4,7 +4,7 @@ import PreviewFinder from "@/components/PreviewFinder";
 import VideoCard from "@/components/VideoCard";
 import { leagueIcons, leaguePages, site, trustedChannels, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
 import { getInventoryStats, getVideos } from "@/lib/inventory";
-import { isLeagueSlug, isPreviewType, safeQuery } from "@/lib/search";
+import { isLeagueSlug, isPreviewType, safeQuery, sortByStatus } from "@/lib/search";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -30,11 +30,13 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const typeParam = typeof params.type === "string" ? params.type : null;
   const league: LeagueSlug | "all" = leagueParam === "all" ? "all" : isLeagueSlug(leagueParam) ? leagueParam : "all";
   const type: PreviewType | "all" = typeParam === "all" ? "all" : isPreviewType(typeParam) ? typeParam : "all";
-  const [{ videos: initialVideos, source }, { videos: latestVideos }, stats] = await Promise.all([
+  const [{ videos: initialVideos, source }, { videos: latestPool }, stats] = await Promise.all([
     getVideos({ query, league, type }, { limit: 6 }),
-    getVideos({}, { limit: 4 }),
+    getVideos({}, { limit: 12 }),
     getInventoryStats()
   ]);
+  // Surface live/upcoming previews first, then newest completed ones.
+  const latestVideos = sortByStatus(latestPool);
   const finderStatus =
     source === "supabase"
       ? `Showing ${initialVideos.length} verified inventory result${initialVideos.length === 1 ? "" : "s"}.`

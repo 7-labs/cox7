@@ -1,12 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import Icon from "@/components/Icon";
+import StatusBadge from "@/components/StatusBadge";
 import {
   leagueIcons,
   youtubeThumbnailUrl,
   youtubeWatchUrl,
   type PreviewVideo
 } from "@/lib/c7-data";
+import { deriveContentStatus } from "@/lib/search";
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("en", {
@@ -53,6 +55,7 @@ export default function VideoCard({ video, compact = false, priority = false }: 
   const thumbnail = video.thumbnailUrl || youtubeThumbnailUrl(video.id);
   const duration = formatDuration(video.durationSeconds);
   const views = formatViews(video.viewCount);
+  const status = deriveContentStatus(video);
 
   return (
     <article className={`video-card${compact ? " video-card--compact" : ""}`}>
@@ -64,6 +67,7 @@ export default function VideoCard({ video, compact = false, priority = false }: 
           priority={priority}
           sizes={compact ? "(max-width: 640px) 100vw, 168px" : "(max-width: 640px) 100vw, (max-width: 980px) 50vw, 320px"}
         />
+        {status !== "completed" ? <span className="thumb-status"><StatusBadge status={status} size="sm" /></span> : null}
         <span className="thumb-play" aria-hidden="true">
           <Icon name="play" size={22} />
         </span>
@@ -73,6 +77,7 @@ export default function VideoCard({ video, compact = false, priority = false }: 
       </Link>
       <div className="video-body">
         <div className="card-meta">
+          <StatusBadge status={status} size="sm" />
           <span className="pill pill--league">
             <span aria-hidden="true">{leagueIcons[video.league]}</span>
             {video.league.toUpperCase()}

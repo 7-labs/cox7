@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PreviewFinder from "@/components/PreviewFinder";
 import { getVideos } from "@/lib/inventory";
+import { deriveContentStatus, sortByStatus } from "@/lib/search";
 
 export const metadata: Metadata = {
   title: "Upcoming Sports Videos",
@@ -13,7 +14,9 @@ export const metadata: Metadata = {
 };
 
 export default async function UpcomingLiveSportsPage() {
-  const { videos } = await getVideos({ type: "upcoming-live" }, { limit: 6 });
+  const { videos: pool } = await getVideos({}, { limit: 24 });
+  // This page is scoped to the live/upcoming part of the lifecycle only.
+  const videos = sortByStatus(pool.filter((video) => deriveContentStatus(video) !== "completed")).slice(0, 6);
 
   return (
     <>

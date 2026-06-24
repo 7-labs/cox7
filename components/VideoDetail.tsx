@@ -1,13 +1,22 @@
 import Link from "next/link";
+import StatusBadge from "@/components/StatusBadge";
 import VideoCard from "@/components/VideoCard";
 import VideoEmbed from "@/components/VideoEmbed";
 import {
+  contentStatusMeta,
   getLeaguePage,
   site,
   youtubeThumbnailUrl,
   youtubeWatchUrl,
   type PreviewVideo
 } from "@/lib/c7-data";
+import { deriveContentStatus } from "@/lib/search";
+
+const STATUS_COPY: Record<ReturnType<typeof deriveContentStatus>, string> = {
+  live: "This preview is for a broadcast that is live now on YouTube.",
+  upcoming: "This preview is for an upcoming, scheduled YouTube broadcast.",
+  completed: "This is a completed preview video — the previewed event may have already taken place."
+};
 
 function formatDate(date: string) {
   return new Intl.DateTimeFormat("en", {
@@ -104,6 +113,7 @@ export default function VideoDetail({
   inventoryUpdatedAt?: string | null;
 }) {
   const league = getLeaguePage(video.league === "draft" ? "draft" : video.league);
+  const status = deriveContentStatus(video);
   const whyListed =
     video.source === "youtube-api"
       ? "This video matched C7's preview-intent filter, came from a trusted sports source, and was verified with YouTube videos.list as public and embeddable."
@@ -115,7 +125,10 @@ export default function VideoDetail({
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd(video)) }} />
       <section className="page-header">
-        <p className="eyebrow">{video.channelTitle} preview video</p>
+        <p className="eyebrow">
+          <StatusBadge status={status} />
+          {video.channelTitle} preview video
+        </p>
         <h1>{video.title}</h1>
         <p className="lead">{video.summary}</p>
         <div className="hero-actions">
@@ -141,10 +154,12 @@ export default function VideoDetail({
 
         <aside className="info-card detail-source">
           <p className="kicker">
+            <StatusBadge status={status} />
             <span className="pill">{video.league.toUpperCase()}</span>
             <span className="pill">{labelFromType(video.type)}</span>
           </p>
           <h2>Video source</h2>
+          <p className="detail-status">{contentStatusMeta[status].label}: {STATUS_COPY[status]}</p>
           <p>Channel: {video.channelTitle}</p>
           <p>Published: {formatDate(video.publishedAt)}</p>
           <p>Source level: {video.sourceLevel.replace(/-/g, " ")}</p>

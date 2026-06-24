@@ -5,6 +5,7 @@ import {
   previewIntentTerms,
   seedVideos,
   trustedChannels,
+  type ContentStatus,
   type LeagueSlug,
   type PreviewType,
   type PreviewVideo,
@@ -194,6 +195,39 @@ export function matchesLeague(videoLeague: LeagueSlug, requestedLeague: LeagueSl
 
 export function matchesType(videoType: PreviewType, requestedType: PreviewType | "all") {
   return requestedType === "all" || videoType === requestedType;
+}
+
+// --- Content status (Phase 1: video-state derivation) ---------------------
+// Maps YouTube's `liveBroadcastContent` ("live" | "upcoming" | "none") onto
+// C7's lifecycle status. A regular VOD preview upload ("none") is treated as
+// `completed`; Phase 2 will override this from a sports-schedule source.
+export function deriveContentStatus(video: Pick<PreviewVideo, "liveBroadcastContent">): ContentStatus {
+  const state = (video.liveBroadcastContent || "").toLowerCase();
+  if (state === "live") return "live";
+  if (state === "upcoming") return "upcoming";
+  return "completed";
+}
+
+const STATUS_RANK: Record<ContentStatus, number> = { live: 0, upcoming: 1, completed: 2 };
+
+// Live first, then upcoming, then completed; ties broken by newest published.
+export function compareByStatusThenDate(a: PreviewVideo, b: PreviewVideo) {
+  const rank = STATUS_RANK[deriveContentStatus(a)] - STATUS_RANK[deriveContentStatus(b)];
+  if (rank !== 0) return rank;
+  return (b.publishedAt || "").localeCompare(a.publishedAt || "");
+}
+
+export function sortByStatus(videos: PreviewVideo[]): PreviewVideo[] {
+  return [...videos].sort(compareByStatusThenDate);
+}
+
+export function filterByStatus(videos: PreviewVideo[], status: ContentStatus | "all"): PreviewVideo[] {
+  if (status === "all") return videos;
+  return videos.filter((video) => deriveContentStatus(video) === status);
+}
+
+export function isContentStatus(value: string | null | undefined): value is ContentStatus {
+  return value === "live" || value === "upcoming" || value === "completed";
 }
 
 export function parseDurationSeconds(durationIso8601: string | null | undefined) {
