@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import PreviewFinder from "@/components/PreviewFinder";
-import VideoCard from "@/components/VideoCard";
 import { site } from "@/lib/c7-data";
 import { getVideos } from "@/lib/inventory";
 import { isLeagueSlug, isPreviewType, safeQuery, type SearchFilters } from "@/lib/search";
@@ -100,18 +99,23 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         />
       </section>
 
-      <section className="section">
-        <p className="eyebrow">Search results</p>
-        <h2>{filters.query ? `Results for "${filters.query}"` : "Browse the latest inventory"}</h2>
-        <div className="results-list">
-          {videos.length > 0 ? (
-            videos.map((video) => <VideoCard video={video} key={video.id} />)
-          ) : (
-            <div className="info-card notice">
-              <strong>No result yet</strong>
-              <p>Try a broader query or clear one of the filters to widen the verified inventory search.</p>
-            </div>
-          )}
+      <section className="content-block surface">
+        <h2>How this search page works</h2>
+        <p className="copy">
+          The finder above is the live search surface for this page. It updates the URL as you change the query, league,
+          or preview type so you can share the exact search state without landing on a stale duplicate results block.
+        </p>
+        <p className="copy">
+          C7 prefers verified inventory first, then falls back to trusted example videos when the live preview database
+          is still refreshing or a query has no matching rows yet.
+        </p>
+        <div className="hero-actions">
+          <Link className="secondary-btn" href="/sports-previews/">
+            Browse all previews
+          </Link>
+          <Link className="secondary-btn" href="/channels/">
+            Review trusted channels
+          </Link>
         </div>
       </section>
     </>
