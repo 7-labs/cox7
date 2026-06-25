@@ -81,5 +81,5 @@ export default async function WatchPage({ params }: WatchPageProps) {
   ]);
   const relatedVideos = relatedCandidates.filter((item) => item.id !== video.id).slice(0, 3);
 
-  return <VideoDetail video={video} relatedVideos={relatedVideos} inventoryUpdatedAt={stats.lastRunAt} />;
+  return <VideoDetail video={video} relatedVideos={relatedVideos} inventoryUpdatedAt={stats.lastRunAt} canonicalPath={`/watch/${video.id}/`} />;
 }

@@ -68,8 +68,8 @@ function toIsoDuration(durationSeconds?: number) {
   return `PT${hours ? `${hours}H` : ""}${minutes ? `${minutes}M` : ""}${seconds || (!hours && !minutes) ? `${seconds}S` : ""}`;
 }
 
-export function videoJsonLd(video: PreviewVideo) {
-  const canonicalUrl = `${site.url}/video/${video.slug}/`;
+export function videoJsonLd(video: PreviewVideo, canonicalPath = `/video/${video.slug}/`) {
+  const canonicalUrl = `${site.url}${canonicalPath}`;
   const leaguePath = getLeaguePage(video.league === "draft" ? "draft" : video.league)?.path || "/sports-previews/";
 
   return {
@@ -119,11 +119,13 @@ export function videoJsonLd(video: PreviewVideo) {
 export default function VideoDetail({
   video,
   relatedVideos = [],
-  inventoryUpdatedAt
+  inventoryUpdatedAt,
+  canonicalPath = `/video/${video.slug}/`
 }: {
   video: PreviewVideo;
   relatedVideos?: PreviewVideo[];
   inventoryUpdatedAt?: string | null;
+  canonicalPath?: string;
 }) {
   const league = getLeaguePage(video.league === "draft" ? "draft" : video.league);
   const status = deriveContentStatus(video);
@@ -131,12 +133,12 @@ export default function VideoDetail({
     video.source === "youtube-api"
       ? "This video matched C7's preview-intent filter, came from a trusted sports source, and was verified with YouTube videos.list as public and embeddable."
       : video.source === "curated-seed"
-        ? "This curated example comes from C7's trusted seed list and demonstrates the source policy used before live inventory is cached."
+        ? "This trusted example comes from C7's seed list and shows the same source policy used for live inventory."
         : "This video is part of the verified C7 inventory, refreshed by the daily updater and served without request-time YouTube calls.";
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd(video)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(videoJsonLd(video, canonicalPath)) }} />
       <section className="page-header">
         <nav aria-label="Breadcrumb" className="breadcrumb">
           <ol>

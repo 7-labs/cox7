@@ -62,7 +62,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   const status =
     source === "supabase"
       ? `Showing ${videos.length} verified inventory result${videos.length === 1 ? "" : "s"}.`
-      : "Our preview database is refreshing — showing curated examples for now.";
+      : "Our preview database is refreshing — showing trusted example videos for now.";
 
   return (
     <>

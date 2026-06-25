@@ -59,7 +59,7 @@ function detailHref(video: PreviewVideo) {
 }
 
 function sourceLabel(video: PreviewVideo) {
-  if (video.source === "curated-seed") return "Curated seed result";
+  if (video.source === "curated-seed") return "Trusted example video";
   if (video.lastVerifiedAt || video.status === "active") return "Verified inventory result";
   return "Source: YouTube API";
 }
@@ -121,7 +121,7 @@ export default function VideoCard({ video, compact = false, priority = false }: 
         <div className="card-meta card-meta--source">
           <span>{sourceLabel(video)}</span>
           <span>{video.channelTitle}</span>
-          <span>Filtered by: {video.filterSummary || "trusted channel + embeddable + preview intent"}</span>
+          <span>Selection: {video.filterSummary || "trusted source + embeddable + preview intent"}</span>
           {video.lastCheckedAt ? (
             <span className="meta-inline">
               <Icon name="clock" size={13} />

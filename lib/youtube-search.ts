@@ -75,7 +75,7 @@ function seedResult(video: PreviewVideo, lastChecked: string): PreviewVideo {
     ...video,
     description: video.description || video.summary,
     source: "curated-seed",
-    filterSummary: video.filterSummary || "curated example result",
+    filterSummary: video.filterSummary || "trusted example video",
     status: video.status || "active",
     firstSeenAt: video.firstSeenAt || video.publishedAt,
     lastCheckedAt: lastChecked,

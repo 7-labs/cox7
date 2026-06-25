@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 import "./globals.css";
 import Icon from "@/components/Icon";
+import NavDisclosure from "@/components/NavDisclosure";
 import { leagueIcons, site } from "@/lib/c7-data";
 
 const navLinks: Array<{ href: string; label: string; icon?: React.ReactNode; emoji?: string }> = [
@@ -74,15 +75,16 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
               <div className="nav-links nav-links-desktop">
                 <NavItems />
               </div>
-              <details className="nav-disclosure">
-                <summary>
-                  <Icon name="grid" size={16} />
-                  Browse
-                </summary>
-                <div className="nav-links">
-                  <NavItems />
-                </div>
-              </details>
+              <NavDisclosure
+                summary={
+                  <>
+                    <Icon name="grid" size={16} />
+                    Browse
+                  </>
+                }
+              >
+                <NavItems />
+              </NavDisclosure>
             </nav>
           </header>
           <main className="main">{children}</main>

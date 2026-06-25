@@ -123,12 +123,12 @@ export default function PreviewFinder({
             ? "Live YouTube API results filtered to trusted channels and preview intent."
             : payload.source === "supabase"
               ? "Verified inventory results from Supabase."
-              : "Live YouTube search is not configured yet; showing curated example results.")
+              : "Live search is unavailable right now; showing trusted example videos instead.")
         }`
       );
     } catch {
       setResults(filterSeedVideos({ query: effectiveQuery, league, type }));
-      setStatus("Search endpoint unavailable; showing local curated fallback results.");
+      setStatus("Search is temporarily unavailable; showing trusted example videos instead.");
     } finally {
       setIsLoading(false);
     }

@@ -10,8 +10,7 @@ import {
   type ContentStatus,
   type LeagueSlug,
   type PreviewType,
-  type PreviewVideo,
-  type TrustedChannel
+  type PreviewVideo
 } from "@/lib/c7-data";
 
 export type SearchFilters = {
@@ -185,10 +184,6 @@ export function isPreviewType(value: string | null): value is PreviewType {
 export function isTrustedSearchResult(channelId: string, title: string, description: string) {
   const combined = `${title} ${description}`;
   return allowedChannelIds.has(channelId) && hasPreviewIntent(combined) && !hasBlockedTerms(combined);
-}
-
-export function getTrustedChannelById(channelId: string): TrustedChannel | undefined {
-  return trustedChannels.find((channel) => channel.channelId === channelId);
 }
 
 export function matchesLeague(videoLeague: LeagueSlug, requestedLeague: LeagueSlug | "all") {

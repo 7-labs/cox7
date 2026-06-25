@@ -15,6 +15,7 @@
   --shadow: 0 24px 80px rgba(0, 0, 0, 0.42);
   --radius: 24px;
   --max: 1180px;
+  --header-offset: 88px;
 }
 
 * {
@@ -218,7 +219,9 @@ button {
 
 .hero-head h1 {
   max-width: none;
-  white-space: nowrap;
+  /* Wrap naturally (balanced) instead of nowrap, which could overflow on
+     mid-width viewports before the mobile breakpoint. */
+  text-wrap: balance;
 }
 
 .hero-finder {
@@ -392,22 +395,11 @@ h3 {
 
 .finder-controls {
   position: sticky;
-  top: 88px;
+  top: var(--header-offset);
 }
 
 .finder-results {
   min-width: 0;
-}
-
-.finder-results-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin-bottom: 4px;
-  color: var(--muted);
-  font-size: 0.86rem;
-  font-weight: 700;
 }
 
 /* The finder lays results beside its controls, so they show on the first screen. */
@@ -417,11 +409,13 @@ h3 {
   margin-top: 0;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 980px) {
   .finder {
     grid-template-columns: 1fr;
   }
 
+  /* Stack at the nav breakpoint so the sticky controls never underlap the
+     expanded mobile nav. */
   .finder-controls {
     position: static;
   }
@@ -515,6 +509,14 @@ h3 {
   color: var(--muted);
   font-size: 0.92rem;
   margin: 14px 0 0;
+}
+
+.finder-clear {
+  margin-top: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 0.86rem;
 }
 
 .results-list,
@@ -1050,6 +1052,37 @@ h3 {
   overflow: hidden;
 }
 
+.breadcrumb {
+  margin: 0 0 14px;
+  font-size: 0.84rem;
+}
+
+.breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: var(--faint);
+}
+
+.breadcrumb li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.breadcrumb li + li::before {
+  content: "/";
+  color: var(--line);
+}
+
+.breadcrumb [aria-current="page"] {
+  color: var(--muted);
+}
+
 /* Video pages: keep the embed near the top of the first screen. */
 .section.video-detail {
   padding-top: 12px;
@@ -1167,6 +1200,10 @@ h3 {
 }
 
 @media (max-width: 980px) {
+  :root {
+    --header-offset: 0px;
+  }
+
   .hero-grid,
   .video-detail,
   .detail-grid,

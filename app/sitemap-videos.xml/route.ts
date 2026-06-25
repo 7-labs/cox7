@@ -1,6 +1,8 @@
 import { getAllVideosForSitemap } from "@/lib/inventory";
 import { site, youtubeEmbedUrl, youtubeThumbnailUrl } from "@/lib/c7-data";
 
+export const revalidate = 300;
+
 function escapeXml(value: string) {
   return value
     .replaceAll("&", "&amp;")

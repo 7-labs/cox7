@@ -58,7 +58,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const finderStatus =
     source === "supabase"
       ? `Showing ${initialVideos.length} verified inventory result${initialVideos.length === 1 ? "" : "s"}.`
-      : "Showing curated example results while inventory fallback is active.";
+      : "Showing trusted example videos while the live preview database refreshes.";
 
   return (
     <>
@@ -181,7 +181,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           ) : (
             <div className="info-card notice">
               <strong>No inventory video yet</strong>
-              <p>The site will keep serving the seed fallback until the first verified inventory sync completes.</p>
+              <p>The site will keep serving trusted example videos until the first verified inventory sync completes.</p>
             </div>
           )}
         </div>
