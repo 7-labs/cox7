@@ -8,15 +8,26 @@ import { filterByStatus, isLeagueSlug, isPreviewType, safeQuery } from "@/lib/se
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: site.name,
-  url: site.url,
-  description: site.description,
-  potentialAction: {
-    "@type": "SearchAction",
-    target: `${site.url}/search/?q={search_term_string}`,
-    "query-input": "required name=search_term_string"
-  }
+  "@graph": [
+    {
+      "@type": "WebSite",
+      name: site.name,
+      url: site.url,
+      description: site.description,
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${site.url}/search/?q={search_term_string}`,
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "Organization",
+      name: site.name,
+      url: site.url,
+      logo: `${site.url}/icon.svg`,
+      description: site.description
+    }
+  ]
 };
 
 type HomePageProps = {
@@ -36,12 +47,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     getInventoryStats()
   ]);
   // Split the homepage feed by lifecycle: live now, soonest upcoming, then
-  // newest completed. Sections render only when they have content.
-  const liveVideos = filterByStatus(latestPool, "live");
-  const upcomingVideos = filterByStatus(latestPool, "upcoming").sort((a, b) =>
-    (a.eventStartTime || "").localeCompare(b.eventStartTime || "")
-  );
-  const completedVideos = filterByStatus(latestPool, "completed");
+  // newest completed. Sections render only when they have content. Dedupe each
+  // against the videos the finder already shows up top so no card appears twice.
+  const shownIds = new Set(initialVideos.map((video) => video.id));
+  const liveVideos = filterByStatus(latestPool, "live").filter((video) => !shownIds.has(video.id));
+  const upcomingVideos = filterByStatus(latestPool, "upcoming")
+    .filter((video) => !shownIds.has(video.id))
+    .sort((a, b) => (a.eventStartTime || "").localeCompare(b.eventStartTime || ""));
+  const completedVideos = filterByStatus(latestPool, "completed").filter((video) => !shownIds.has(video.id));
   const finderStatus =
     source === "supabase"
       ? `Showing ${initialVideos.length} verified inventory result${initialVideos.length === 1 ? "" : "s"}.`
@@ -218,6 +231,12 @@ export default async function HomePage({ searchParams }: HomePageProps) {
               </div>
             </div>
           ))}
+        </div>
+        <div className="hero-actions hero-actions--center">
+          <Link className="secondary-btn" href="/channels/">
+            <Icon name="youtube" size={16} />
+            View all trusted channels
+          </Link>
         </div>
       </section>
     </>

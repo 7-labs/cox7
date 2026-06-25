@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import PreviewFinder from "@/components/PreviewFinder";
 import VideoCard from "@/components/VideoCard";
-import { site, type LeagueSlug, type PreviewType } from "@/lib/c7-data";
+import { site } from "@/lib/c7-data";
 import { getVideos } from "@/lib/inventory";
 import { isLeagueSlug, isPreviewType, safeQuery, type SearchFilters } from "@/lib/search";
 
@@ -24,10 +24,10 @@ function parseFilters(params: Record<string, string | string[] | undefined>): Re
 
 export async function generateMetadata({ searchParams }: SearchPageProps): Promise<Metadata> {
   const filters = parseFilters((await searchParams) || {});
-  const title = filters.query ? `Search results for ${filters.query}` : "Search sports previews";
+  const title = filters.query ? `Search results for ${filters.query}` : "Search Sports Preview Videos";
   const description = filters.query
-    ? `Browse server-rendered C7 preview search results for ${filters.query}.`
-    : "Search C7 Sports Previews by query, league, and preview type.";
+    ? `Browse C7 sports preview search results for ${filters.query}.`
+    : "Search official and trusted sports preview videos by team, league, or event, and share the exact results with a linkable URL.";
 
   return {
     title,
@@ -47,29 +47,45 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
   };
 }
 
+const breadcrumbJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "Home", item: site.url },
+    { "@type": "ListItem", position: 2, name: "Search", item: `${site.url}/search/` }
+  ]
+};
+
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const filters = parseFilters((await searchParams) || {});
   const { videos, source } = await getVideos(filters, { limit: 24 });
   const status =
     source === "supabase"
       ? `Showing ${videos.length} verified inventory result${videos.length === 1 ? "" : "s"}.`
-      : "Showing curated fallback results while inventory fallback is active.";
+      : "Our preview database is refreshing — showing curated examples for now.";
 
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }} />
       <section className="page-header">
+        <nav aria-label="Breadcrumb" className="breadcrumb">
+          <ol>
+            <li><Link className="text-link" href="/">Home</Link></li>
+            <li><span aria-current="page">Search</span></li>
+          </ol>
+        </nav>
         <p className="eyebrow">Search</p>
-        <h1>Search sports previews with a shareable URL.</h1>
+        <h1>Search sports preview videos by team, league, or event.</h1>
         <p className="lead">
-          This HTML page is the canonical search destination for C7. Use it for shareable results, server-rendered discovery, and
-          a cleaner handoff from search engines.
+          Find official and trusted preview videos, then share the exact results with a clean, linkable URL — server-rendered for
+          fast, reliable discovery.
         </p>
         <div className="hero-actions">
-          <Link className="secondary-btn" href="/">
-            Back to home
-          </Link>
           <Link className="secondary-btn" href="/sports-previews/">
             Browse all previews
+          </Link>
+          <Link className="secondary-btn" href="/channels/">
+            Trusted channels
           </Link>
         </div>
       </section>

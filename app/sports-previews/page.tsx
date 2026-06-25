@@ -50,20 +50,16 @@ export default async function SportsPreviewsPage({ searchParams }: SportsPreview
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemList) }} />
       <section className="page-header">
         <p className="eyebrow">All sports previews</p>
-        <h1>Official sports preview videos, organized for search.</h1>
+        <h1>Browse official sports preview videos.</h1>
         <p className="lead">
-          Use this hub to browse verified C7 inventory, league pages, channel directories, and the preview finder. The project is
-          designed to become an auto-updating YouTube discovery layer, not a replay or live-stream mirror.
+          Every verified C7 preview in one place — filter by status, jump into a league hub, or open the finder. Official and
+          trusted sources only, never replays or live-stream mirrors.
         </p>
-        {stats.lastRunAt ? <p className="finder-status">Last inventory update: {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}</p> : null}
-        <div className="hero-actions">
-          <Link className="btn" href="/#finder">
-            Search the finder
-          </Link>
-          <Link className="secondary-btn" href="/channels/">
-            View trusted channels
-          </Link>
-        </div>
+        {stats.lastRunAt ? (
+          <p className="finder-status">
+            Last inventory update: {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}
+          </p>
+        ) : null}
       </section>
 
       <section className="section section--tight">
@@ -113,6 +109,23 @@ export default async function SportsPreviewsPage({ searchParams }: SportsPreview
               <span className="text-link">Open hub <Icon name="arrow" size={15} /></span>
             </Link>
           ))}
+        </div>
+      </section>
+
+      <section className="content-block surface">
+        <h2>How C7 sports previews work</h2>
+        <p className="copy">
+          C7 is an auto-updating YouTube discovery layer, not a replay or live-stream mirror. A daily updater verifies previews
+          from official and trusted channels and writes them to the inventory this page reads. Use the finder to search, or the
+          status filters above to browse what is live, upcoming, or completed.
+        </p>
+        <div className="hero-actions">
+          <Link className="btn" href="/search/">
+            Open the finder
+          </Link>
+          <Link className="secondary-btn" href="/channels/">
+            View trusted channels
+          </Link>
         </div>
       </section>
     </>

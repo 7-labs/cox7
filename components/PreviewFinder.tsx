@@ -29,7 +29,7 @@ export default function PreviewFinder({
   defaultLeague = "all",
   defaultType = "all",
   initialVideos = [],
-  initialStatus = "Showing curated example results. Search to query the live endpoint when configured."
+  initialStatus = "Search official and trusted sports previews by team, league, event, or matchup."
 }: PreviewFinderProps) {
   const pathname = usePathname();
   const [query, setQuery] = useState(defaultQuery);
@@ -81,6 +81,21 @@ export default function PreviewFinder({
     setType(nextType);
     replaceUrl(query, league, nextType);
   }
+
+  function clearFilters() {
+    setQuery(defaultQuery);
+    setLeague(defaultLeague);
+    setType(defaultType);
+    setResults(
+      initialVideos.length > 0
+        ? initialVideos
+        : filterSeedVideos({ query: defaultQuery, league: defaultLeague, type: defaultType })
+    );
+    setStatus(initialStatus);
+    replaceUrl(defaultQuery, defaultLeague, defaultType);
+  }
+
+  const hasChangedFilters = query !== defaultQuery || league !== defaultLeague || type !== defaultType;
 
   async function runSearch(event?: FormEvent<HTMLFormElement>, nextQuery?: string) {
     event?.preventDefault();
@@ -184,6 +199,11 @@ export default function PreviewFinder({
           {status}
         </p>
         {activeFilters ? <p className="finder-status">Active filters: {activeFilters}</p> : null}
+        {hasChangedFilters ? (
+          <button type="button" className="text-link finder-clear" onClick={clearFilters}>
+            Clear filters
+          </button>
+        ) : null}
       </div>
 
       <div className="finder-results">
@@ -194,8 +214,8 @@ export default function PreviewFinder({
             visibleResults.slice(0, 6).map((video, index) => <VideoCard video={video} compact priority={index === 0 && pathname === "/"} key={video.id} />)
           ) : (
             <div className="info-card notice">
-              <strong>No curated example result yet</strong>
-              <p>Run a live search to check YouTube for trusted, public, embeddable sports preview videos.</p>
+              <strong>No previews matched these filters</strong>
+              <p>Try removing a filter or broadening your search to widen the results.</p>
             </div>
           )}
         </div>

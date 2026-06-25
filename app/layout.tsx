@@ -93,7 +93,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <div>Official and trusted sports preview discovery.</div>
               </div>
               <div className="nav-links" aria-label="Footer navigation">
+                <Link href="/sports-previews/">All previews</Link>
                 <Link href="/search/">Search</Link>
+                <Link href="/channels/">Channels</Link>
                 <Link href="/archive/">Archive</Link>
                 <Link href="/upcoming-live-sports/">Upcoming</Link>
               </div>
