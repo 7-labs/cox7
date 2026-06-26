@@ -137,7 +137,7 @@ export default function PreviewFinder({
   return (
     <section className="finder surface" aria-label="Official Sports Preview Finder">
       <div className="finder-controls">
-        <form onSubmit={runSearch}>
+        <form action="/search/" method="get" onSubmit={runSearch}>
           <label className="finder-label" htmlFor="preview-query">
             <Icon name="search" size={16} />
             Search team, league, event, or matchup
@@ -147,6 +147,7 @@ export default function PreviewFinder({
               <Icon name="search" size={18} />
               <input
                 id="preview-query"
+                name="q"
                 className="input input--icon"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
@@ -162,6 +163,7 @@ export default function PreviewFinder({
             <select
               aria-label="Filter by league"
               className="select"
+              name="league"
               value={league}
               onChange={(event) => handleLeagueChange(event.target.value as LeagueSlug | "all")}
             >
@@ -175,6 +177,7 @@ export default function PreviewFinder({
             <select
               aria-label="Filter by preview type"
               className="select"
+              name="type"
               value={type}
               onChange={(event) => handleTypeChange(event.target.value as PreviewType | "all")}
             >
