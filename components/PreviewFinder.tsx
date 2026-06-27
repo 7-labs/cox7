@@ -43,13 +43,12 @@ export default function PreviewFinder({
 
   const localPreview = useMemo(() => filterSeedVideos({ query, league, type }), [query, league, type]);
   const visibleResults = results.length > 0 ? results : localPreview;
+  const resultLabel = `${visibleResults.length} ${visibleResults.length === 1 ? "match" : "matches"}`;
   const activeFilters = [
-    query ? `Query: ${query}` : null,
-    league !== "all" ? `League: ${league.toUpperCase()}` : null,
-    type !== "all" ? `Type: ${type.replace(/-/g, " ")}` : null
-  ]
-    .filter(Boolean)
-    .join(" · ");
+    ...(query ? [{ label: "Query", value: query }] : []),
+    ...(league !== "all" ? [{ label: "League", value: league.toUpperCase() }] : []),
+    ...(type !== "all" ? [{ label: "Type", value: type.replace(/-/g, " ") }] : [])
+  ];
 
   useEffect(() => {
     setQuery(defaultQuery);
@@ -152,9 +151,11 @@ export default function PreviewFinder({
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
                 placeholder="Try: Super Bowl preview, NBA Draft preview"
+                autoComplete="off"
+                aria-describedby="finder-status"
               />
             </div>
-            <button className="btn" type="submit" disabled={isLoading}>
+            <button className="btn" type="submit" disabled={isLoading} aria-busy={isLoading}>
               <Icon name="search" size={16} />
               {isLoading ? "Searching" : "Find previews"}
             </button>
@@ -198,10 +199,19 @@ export default function PreviewFinder({
           </div>
         </form>
 
-        <p className="finder-status" role="status">
+        <p className="finder-status" id="finder-status" role="status" aria-live="polite">
           {status}
         </p>
-        {activeFilters ? <p className="finder-status">Active filters: {activeFilters}</p> : null}
+        {activeFilters.length > 0 ? (
+          <div className="active-filter-row" aria-label="Active filters">
+            {activeFilters.map((filter) => (
+              <span className="filter-chip" key={filter.label}>
+                <span>{filter.label}</span>
+                {filter.value}
+              </span>
+            ))}
+          </div>
+        ) : null}
         {hasChangedFilters ? (
           <button type="button" className="text-link finder-clear" onClick={clearFilters}>
             Clear filters
@@ -209,7 +219,17 @@ export default function PreviewFinder({
         ) : null}
       </div>
 
-      <div className="finder-results">
+      <div className="finder-results" aria-busy={isLoading}>
+        <div className="finder-results-head">
+          <div>
+            <span className="results-kicker">Top matches</span>
+            <strong>{isLoading ? "Searching inventory" : resultLabel}</strong>
+          </div>
+          <span className="source-chip">
+            <Icon name="shield" size={14} />
+            Inventory first
+          </span>
+        </div>
         <div className="results-list">
           {isLoading ? (
             Array.from({ length: 3 }).map((_, index) => <div className="video-card skeleton-card" key={index} aria-hidden="true" />)

@@ -59,6 +59,9 @@ export default async function HomePage({ searchParams }: HomePageProps) {
     source === "supabase"
       ? `Showing ${initialVideos.length} verified inventory result${initialVideos.length === 1 ? "" : "s"}.`
       : "Showing trusted example videos while the live preview database refreshes.";
+  const lastRunLabel = stats.lastRunAt
+    ? new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })
+    : null;
 
   return (
     <>
@@ -74,7 +77,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
             {stats.lastRunAt ? (
               <span className="hero-badge">
                 <Icon name="clock" size={14} />
-                Inventory updated {new Date(stats.lastRunAt).toLocaleDateString("en", { month: "short", day: "numeric", year: "numeric" })}
+                Inventory updated {lastRunLabel}
               </span>
             ) : null}
             {stats.total ? (
@@ -107,22 +110,22 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           </Link>
         </div>
 
-        <div className="stats-grid" aria-label="C7 project principles">
-          <div className="info-card feature-card">
-            <span className="feature-icon"><Icon name="shield" size={22} /></span>
+        <div className="trust-strip" aria-label="C7 verification rules">
+          <span>
+            <Icon name="shield" size={17} />
             <strong>Official-first</strong>
-            <p>Whitelist league and trusted sports channels before expanding discovery.</p>
-          </div>
-          <div className="info-card feature-card">
-            <span className="feature-icon"><Icon name="embed" size={22} /></span>
-            <strong>Embed, not copy</strong>
-            <p>No video downloads, no mirrored files, and clear YouTube source attribution.</p>
-          </div>
-          <div className="info-card feature-card">
-            <span className="feature-icon"><Icon name="trending" size={22} /></span>
-            <strong>SEO pages</strong>
-            <p>League, draft, upcoming, channel, archive, and video detail pages create long-tail entry points.</p>
-          </div>
+            <small>League, network, and trusted sports channels.</small>
+          </span>
+          <span>
+            <Icon name="embed" size={17} />
+            <strong>Embed only</strong>
+            <small>No downloads, mirrored files, or replay scraping.</small>
+          </span>
+          <span>
+            <Icon name="trending" size={17} />
+            <strong>Indexable paths</strong>
+            <small>League, channel, archive, and canonical video pages.</small>
+          </span>
         </div>
       </section>
 
